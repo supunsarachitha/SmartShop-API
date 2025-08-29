@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36414.22 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.API", "SmartShop.API.csproj", "{7AF3701F-0E6E-4D0E-9DA1-945BACCADDCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.API", "SmartShop.API\SmartShop.API.csproj", "{5AEA1A27-C577-4B22-9CEC-D5AF7F68749B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7AF3701F-0E6E-4D0E-9DA1-945BACCADDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7AF3701F-0E6E-4D0E-9DA1-945BACCADDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7AF3701F-0E6E-4D0E-9DA1-945BACCADDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7AF3701F-0E6E-4D0E-9DA1-945BACCADDCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AEA1A27-C577-4B22-9CEC-D5AF7F68749B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AEA1A27-C577-4B22-9CEC-D5AF7F68749B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AEA1A27-C577-4B22-9CEC-D5AF7F68749B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AEA1A27-C577-4B22-9CEC-D5AF7F68749B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1A0389E7-488A-4078-AF67-3BFD6E4E0D26}
+		SolutionGuid = {28C87E0A-5561-4D56-A9A8-FA43C1115E11}
 	EndGlobalSection
 EndGlobal
