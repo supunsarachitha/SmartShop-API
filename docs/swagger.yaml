@@ -5,7 +5,7 @@ info:
   description: >
     Open-source invoice and billing API for retail shops. Supports product, customer, invoice, and payment management.
   contact:
-    name: Supun supunsarachitha
+    name: Supun sarachitha
     url: https://github.com/supunsarachitha/SmartShop-API
 servers:
   - url: https://api.smartshop.com/v1
