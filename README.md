@@ -119,11 +119,10 @@ This project is licensed under the [MIT License](LICENSE.txt).
 
 ## 🤝 Contributing
 
-1. Fork the repository  
-2. Create a new branch (`feature/your-feature`)  
-3. Commit your changes  
-4. Push to your branch  
-5. Open a Pull Request
+We welcome contributions of all kinds—bug fixes, feature enhancements, documentation improvements, and more.
+
+📌 See our [Contributing Guidelines](CONTRIBUTING.md) to get started.
+
 
 ---
 
