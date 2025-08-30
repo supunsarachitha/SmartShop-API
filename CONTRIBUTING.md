@@ -8,7 +8,7 @@ Welcome! We're excited that you're interested in contributing to **SmartShop-API
 Before contributing, make sure you have:
 
 - [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
-- A running SQL Server or PostgreSQL instance
+- A running PostgreSQL instance
 - Git installed
 
 Clone the repo and set up your environment:
