@@ -57,7 +57,7 @@ SmartShop-API/
 
 ### 1️⃣ Prerequisites
 - [.NET 6 SDK](https://dotnet.microsoft.com/download)
-- A running database instance (SQL Server, PostgreSQL, etc.)
+- A running database instance (We preffer PostgreSQL)
 - Git
 
 ### 2️⃣ Clone the Repository
