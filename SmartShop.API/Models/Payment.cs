@@ -1,14 +1,16 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SmartShop.API.Models
 {
     public class Payment
     {
+        [Key]
         public Guid Id { get; set; }
-        public int InvoiceId { get; set; }
+        public Guid InvoiceId { get; set; }
         public decimal Amount { get; set; }
-        public string Method { get; set; } = string.Empty;
-        public string Status { get; set; } = string.Empty;
+        public Guid PaymentMethodId { get; set; }
+        public int Status { get; set; }
         public DateTime Date { get; set; }
     }
 }
