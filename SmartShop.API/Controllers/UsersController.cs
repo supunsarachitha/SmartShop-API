@@ -13,47 +13,47 @@ namespace SmartShop.API.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly SmartShopDbContext _context;
 
-        public CustomersController(SmartShopDbContext context)
+        public UsersController(SmartShopDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Customers
+        // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Customers.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Customers/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(Guid id)
+        public async Task<ActionResult<User>> GetUsers(Guid id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var users = await _context.Users.FindAsync(id);
 
-            if (customer == null)
+            if (users == null)
             {
                 return NotFound();
             }
 
-            return customer;
+            return users;
         }
 
-        // PUT: api/Customers/5
+        // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(Guid id, Customer customer)
+        public async Task<IActionResult> PutUsers(Guid id, User users)
         {
-            if (id != customer.Id)
+            if (id != users.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(customer).State = EntityState.Modified;
+            _context.Entry(users).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +61,7 @@ namespace SmartShop.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!UsersExists(id))
                 {
                     return NotFound();
                 }
@@ -74,36 +74,36 @@ namespace SmartShop.API.Controllers
             return NoContent();
         }
 
-        // POST: api/Customers
+        // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<User>> PostUsers(User users)
         {
-            _context.Customers.Add(customer);
+            _context.Users.Add(users);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            return CreatedAtAction("GetUsers", new { id = users.Id }, users);
         }
 
-        // DELETE: api/Customers/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(Guid id)
+        public async Task<IActionResult> DeleteUsers(Guid id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+            var users = await _context.Users.FindAsync(id);
+            if (users == null)
             {
                 return NotFound();
             }
 
-            _context.Customers.Remove(customer);
+            _context.Users.Remove(users);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CustomerExists(Guid id)
+        private bool UsersExists(Guid id)
         {
-            return _context.Customers.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }
