@@ -26,7 +26,7 @@ It provides endpoints for managing products, categories, customers, and orders, 
 
 - **Language:** C#  
 - **Framework:** .NET 6+  
-- **Database:** (e.g., SQL Server / PostgreSQL — update as applicable)  
+- **Database:** (e.g. PostgreSQL — update as applicable)  
 - **ORM:** Entity Framework Core  
 - **Authentication:** JWT-based authentication (if implemented)  
 - **Hosting:** Compatible with Azure, AWS, or on-premise deployment
