@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SmartShop.API.Models;
 
 public class SmartShopDbContext : DbContext
@@ -13,4 +13,7 @@ public class SmartShopDbContext : DbContext
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Invoice> Invoices { get; set; }
     public DbSet<InvoiceItem> InvoiceItems { get; set; }
+    public DbSet<PaymentMethod> PaymentMethod { get; set; }
+
+    public DbSet<User> Users { get; set; } = default!;
 }
