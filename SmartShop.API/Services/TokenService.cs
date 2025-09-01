@@ -1,11 +1,12 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using SmartShop.API.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace SmartShop.API.Services
 {
-    public class TokenService
+    public class TokenService:ITokenService
     {
         private readonly IConfiguration _configuration;
 

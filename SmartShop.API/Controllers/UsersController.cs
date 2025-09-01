@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 
 namespace SmartShop.API.Controllers
 {
+    /// <summary>
+    /// Provides endpoints for managing user data in the system.
+    /// </summary>
+    /// <remarks>This controller handles CRUD operations for user entities, including retrieving, creating,
+    /// updating, and deleting users. All endpoints in this controller require authorization, as indicated by the <see
+    /// cref="AuthorizeAttribute" />. The base route for this controller is "api/Users".</remarks>
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
