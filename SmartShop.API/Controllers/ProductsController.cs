@@ -17,10 +17,11 @@ namespace SmartShop.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly SmartShopDbContext _context;
-
-        public ProductsController(SmartShopDbContext context)
+        private readonly ILogger<CustomersController> _logger;
+        public ProductsController(SmartShopDbContext context, ILogger<CustomersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Products

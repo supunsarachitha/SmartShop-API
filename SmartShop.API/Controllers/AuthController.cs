@@ -8,6 +8,7 @@ using System.Text;
 
 namespace SmartShop.API.Controllers
 {
+ 
     public class AuthController : Controller
     {
         private readonly TokenService _tokenService;

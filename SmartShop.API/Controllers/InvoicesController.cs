@@ -16,10 +16,11 @@ namespace SmartShop.API.Controllers
     public class InvoicesController : ControllerBase
     {
         private readonly SmartShopDbContext _context;
-
-        public InvoicesController(SmartShopDbContext context)
+        private readonly ILogger<CustomersController> _logger;
+        public InvoicesController(SmartShopDbContext context, ILogger<CustomersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Invoices

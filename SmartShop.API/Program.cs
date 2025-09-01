@@ -6,10 +6,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+// Add services to the container. 
 builder.Services.AddDbContext<SmartShopDbContext>(options =>
     options.UseNpgsql(connectionString));
 

@@ -16,10 +16,12 @@ namespace SmartShop.API.Controllers
     public class PaymentMethodsController : ControllerBase
     {
         private readonly SmartShopDbContext _context;
+        private readonly ILogger<CustomersController> _logger;
 
-        public PaymentMethodsController(SmartShopDbContext context)
+        public PaymentMethodsController(SmartShopDbContext context, ILogger<CustomersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/PaymentMethods
