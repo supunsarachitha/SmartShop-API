@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.Scripting;
 using SmartShop.API.Interfaces;
+using SmartShop.API.Models;
+using SmartShop.API.Models.Responses;
 
 namespace SmartShop.API.Services
 {
@@ -12,16 +14,28 @@ namespace SmartShop.API.Services
             _context = context;
         }
 
-        public bool Authenticate(string userName, string password)
+        public UserAuthenticationResponse Authenticate(string userName, string password)
         {
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
-                return false;
+                return new UserAuthenticationResponse { IsAuthenticated = false};
 
-            var user = _context.Users
-                .FirstOrDefault(u => u.UserName == userName && u.IsActive);
+            var user = _context.Users.FirstOrDefault(u => u.UserName == userName && u.IsActive);
 
-            return user != null;
+            if(user != null)
+            {
+                // Update last login timestamp
+                user.LastLoginDate = DateTime.UtcNow;
+                _context.SaveChanges();
+
+                return new UserAuthenticationResponse { IsAuthenticated = true, User = user };
+            }
+            else
+            {
+                return new UserAuthenticationResponse { IsAuthenticated = false };
+            }
+
+            
         }
-
+          
     }
 }

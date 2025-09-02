@@ -22,6 +22,7 @@ namespace SmartShop.API.Models
 
         public Guid? Role { get; set; }
         public bool IsActive { get; set; }
+        public DateTime? LastLoginDate { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
     }

@@ -28,11 +28,11 @@ namespace SmartShop.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            bool isAuthenticated = _userService.Authenticate(request.UserName, request.Password);
+            UserAuthenticationResponse auth = _userService.Authenticate(request.UserName, request.Password);
 
-            if (isAuthenticated)
+            if (auth.IsAuthenticated)
             {
-                var token = _tokenService.GenerateJwtToken(request.UserName);
+                var token = _tokenService.GenerateJwtToken(auth.User.UserName); 
 
                 var response = new ApplicationResponse<object>
                 {
@@ -59,6 +59,6 @@ namespace SmartShop.API.Controllers
             };
 
             return Unauthorized(errorResponse);
-        }
+        } 
     }
 }
