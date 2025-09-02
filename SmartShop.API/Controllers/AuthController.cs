@@ -10,26 +10,29 @@ using System.Security.Claims;
 using System.Text;
 
 namespace SmartShop.API.Controllers
-{
+{ 
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly ITokenService _tokenService;
         private readonly ILogger _logger;
-        public AuthController(ITokenService tokenService, ILogger<AuthController> logger)
+        private readonly IUserService _userService;
+        public AuthController(ITokenService tokenService, ILogger<AuthController> logger, IUserService userService)
         {
             _tokenService = tokenService;
             _logger = logger;
+            _userService = userService;
         }
-
-
+         
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest user)
+        public IActionResult Login([FromBody] LoginRequest request)
         {
-            if (user.UserName == "admin" && user.Password == "password")
+            bool isAuthenticated = _userService.Authenticate(request.UserName, request.Password);
+
+            if (isAuthenticated)
             {
-                var token = _tokenService.GenerateJwtToken(user.UserName);
+                var token = _tokenService.GenerateJwtToken(request.UserName);
 
                 var response = new ApplicationResponse<object>
                 {
