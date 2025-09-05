@@ -117,7 +117,7 @@ namespace SmartShop.API.Services
         {
             try
             {
-                var emailExists = await _context.Customers.AnyAsync(c => c.Email == customer.Email && c.Id != customer.Id);
+                var emailExists = await _context.Customers.AnyAsync(c => c.Email == customer.Email);
                 
                 if (emailExists)
                 {
