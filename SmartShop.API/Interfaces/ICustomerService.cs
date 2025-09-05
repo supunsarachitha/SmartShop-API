@@ -12,5 +12,4 @@ namespace SmartShop.API.Interfaces
         Task<ApplicationResponse<Customer>> CreateCustomerAsync(Customer customer);
         Task<ApplicationResponse<Customer>> DeleteCustomerAsync(Guid id);
     }
-
 }
