@@ -1,4 +1,3 @@
-﻿
 using SmartShop.API.Models;
 using SmartShop.API.Models.Responses;
 
