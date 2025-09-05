@@ -21,15 +21,7 @@ namespace SmartShop.API.Services
             {
                 var customers = await _context.Customers.ToListAsync();
 
-                if (customers == null || customers.Count == 0)
-                {
-                    return ResponseFactory.CreateErrorResponse<List<Customer>>(
-                        "No customers found.",
-                        "Customers",
-                        "The customer list is empty.",
-                        StatusCodes.Status404NotFound);
-                }
-
+                // Return 200 OK with an empty array if no customers are found
                 return ResponseFactory.CreateSuccessResponse(
                     customers,
                     "Customers retrieved successfully.",
