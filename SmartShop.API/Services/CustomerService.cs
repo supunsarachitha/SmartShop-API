@@ -109,7 +109,7 @@ namespace SmartShop.API.Services
                 return ResponseFactory.CreateSuccessResponse(
                     existingCustomer,
                     "Customer updated successfully.",
-                    StatusCodes.Status204NoContent);
+                    StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
