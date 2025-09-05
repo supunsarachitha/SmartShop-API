@@ -1,17 +1,16 @@
 ﻿
 using SmartShop.API.Models;
+using SmartShop.API.Models.Responses;
 
 namespace SmartShop.API.Interfaces
 {
     public interface ICustomerService
     {
-        Task<IEnumerable<Customer>> GetAllCustomersAsync();
-        Task<Customer?> GetCustomerByIdAsync(Guid id);
-        Task<bool> UpdateCustomerAsync(Guid id, Customer customer);
-        Task<bool> CustomerExistsAsync(Guid id);
-        Task<Customer> CreateCustomerAsync(Customer customer);
-        Task<bool> DeleteCustomerAsync(Guid id);
-
+        Task<ApplicationResponse<List<Customer>>> GetAllCustomersAsync();
+        Task<ApplicationResponse<Customer>> GetCustomerByIdAsync(Guid id);
+        Task<ApplicationResponse<Customer>> UpdateCustomerAsync(Guid id, Customer customer);
+        Task<ApplicationResponse<Customer>> CreateCustomerAsync(Customer customer);
+        Task<ApplicationResponse<Customer>> DeleteCustomerAsync(Guid id);
     }
 
 }
