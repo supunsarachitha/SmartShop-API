@@ -13,7 +13,7 @@ namespace SmartShop.API.Controllers
         private readonly ILogger<CustomersController> _logger;
         private readonly ICustomerService _customerService;
 
-        public CustomersController(SmartShopDbContext context, ILogger<CustomersController> logger, ICustomerService customerService)
+        public CustomersController(ILogger<CustomersController> logger, ICustomerService customerService)
         { 
             _logger = logger;
             _customerService = customerService;
