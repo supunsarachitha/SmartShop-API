@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using SmartShop.API.Interfaces;
 using SmartShop.API.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SmartShop.API.Controllers
 {
@@ -14,98 +9,61 @@ namespace SmartShop.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
-    {
-        private readonly SmartShopDbContext _context;
+    { 
         private readonly ILogger<CustomersController> _logger;
+        private readonly ICustomerService _customerService;
 
-        public CustomersController(SmartShopDbContext context, ILogger<CustomersController> logger)
-        {
-            _context = context; 
+        public CustomersController(ILogger<CustomersController> logger, ICustomerService customerService)
+        { 
             _logger = logger;
+            _customerService = customerService;
         }
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<IActionResult> GetCustomers()
         {
-            return await _context.Customers.ToListAsync();
+            var response = await _customerService.GetAllCustomersAsync();
+            return StatusCode(response.StatusCode ?? StatusCodes.Status200OK, response);
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(Guid id)
+        public async Task<IActionResult> GetCustomer(Guid id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return customer;
+            var response = await _customerService.GetCustomerByIdAsync(id);
+            return StatusCode(response.StatusCode ?? StatusCodes.Status200OK, response);
         }
-
+         
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomer(Guid id, Customer customer)
         {
-            if (id != customer.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(customer).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var response = await _customerService.UpdateCustomerAsync(id, customer);
+            return StatusCode(response.StatusCode ?? StatusCodes.Status400BadRequest, response);
         }
 
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<IActionResult> PostCustomer(Customer customer)
         {
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
+            var response = await _customerService.CreateCustomerAsync(customer);
 
-            return CreatedAtAction("GetCustomer", new { id = customer.Id }, customer);
+            if (!response.Success)
+                return StatusCode(response.StatusCode ?? StatusCodes.Status400BadRequest, response);
+
+            return CreatedAtAction(nameof(GetCustomer), new { id = response.Data.Id }, response);
         }
 
-        // DELETE: api/Customers/5
+        // DELETE: api/Customers/5 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(Guid id)
         {
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            var response = await _customerService.DeleteCustomerAsync(id);
+            return StatusCode(response.StatusCode ?? StatusCodes.Status400BadRequest, response);
         }
 
-        private bool CustomerExists(Guid id)
-        {
-            return _context.Customers.Any(e => e.Id == id);
-        }
     }
 }
