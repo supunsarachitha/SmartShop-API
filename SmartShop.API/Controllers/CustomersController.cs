@@ -9,14 +9,12 @@ namespace SmartShop.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CustomersController : ControllerBase
-    {
-        private readonly SmartShopDbContext _context;
+    { 
         private readonly ILogger<CustomersController> _logger;
         private readonly ICustomerService _customerService;
 
         public CustomersController(SmartShopDbContext context, ILogger<CustomersController> logger, ICustomerService customerService)
-        {
-            _context = context; 
+        { 
             _logger = logger;
             _customerService = customerService;
         }
