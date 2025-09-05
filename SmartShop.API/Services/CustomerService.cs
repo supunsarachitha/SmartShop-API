@@ -97,7 +97,6 @@ namespace SmartShop.API.Services
                     StatusCodes.Status404NotFound);
             }
 
-            
             existingCustomer.Name = customer.Name;
             existingCustomer.Email = customer.Email;
             existingCustomer.Phone = customer.Phone;
