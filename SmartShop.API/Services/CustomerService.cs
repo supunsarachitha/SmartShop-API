@@ -6,7 +6,7 @@ using SmartShop.API.Models.Responses;
 
 namespace SmartShop.API.Services
 {
-    public class CustomerService:ICustomerService
+    public class CustomerService : ICustomerService
     {
         private readonly SmartShopDbContext _context;
 
