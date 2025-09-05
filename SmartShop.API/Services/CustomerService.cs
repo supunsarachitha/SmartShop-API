@@ -117,15 +117,14 @@ namespace SmartShop.API.Services
         {
             try
             {
-                var existingCustomer = await _context.Customers
-                    .FirstOrDefaultAsync(c => c.Email == customer.Email);
-
-                if (existingCustomer != null)
+                var emailExists = await _context.Customers.AnyAsync(c => c.Email == customer.Email && c.Id != customer.Id);
+                
+                if (emailExists)
                 {
                     return ResponseFactory.CreateErrorResponse<Customer>(
                         "Duplicate email detected.",
                         "Email",
-                        "A customer with this email already exists.",
+                        "Another customer with this email already exists.",
                         StatusCodes.Status409Conflict); // 409 = Conflict
                 }
 
