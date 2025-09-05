@@ -176,7 +176,7 @@ namespace SmartShop.API.Services
                 return ResponseFactory.CreateSuccessResponse(
                     customer,
                     "Customer deleted successfully.",
-                    StatusCodes.Status204NoContent);
+                    StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
