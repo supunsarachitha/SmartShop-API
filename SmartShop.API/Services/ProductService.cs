@@ -116,6 +116,11 @@ namespace SmartShop.API.Services
         {
             try
             {
+                // Ensure the product Id is initialized
+                if (product.Id == Guid.Empty)
+                {
+                    product.Id = Guid.NewGuid();
+                }
                 product.CreatedDate = _dateTimeProvider.UtcNow;
                 product.UpdatedDate = _dateTimeProvider.UtcNow;
 
