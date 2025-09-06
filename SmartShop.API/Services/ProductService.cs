@@ -9,10 +9,12 @@ namespace SmartShop.API.Services
     public class ProductService : IProductService
     {
         private readonly SmartShopDbContext _context;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public ProductService(SmartShopDbContext context)
+        public ProductService(SmartShopDbContext context, IDateTimeProvider dateTimeProvider)
         {
             _context = context;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<ApplicationResponse<List<Product>>> GetAllProductsAsync()
@@ -21,7 +23,6 @@ namespace SmartShop.API.Services
             {
                 var products = await _context.Products.ToListAsync();
 
-                // Return 200 OK with an empty array if no products are found
                 return ResponseFactory.CreateSuccessResponse(
                     products,
                     "Products retrieved successfully.",
@@ -91,7 +92,7 @@ namespace SmartShop.API.Services
             existingProduct.Name = product.Name;
             existingProduct.Price = product.Price;
             existingProduct.Stock = product.Stock;
-            existingProduct.UpdatedDate = DateTime.UtcNow;
+            existingProduct.UpdatedDate = _dateTimeProvider.UtcNow;
 
             try
             {
@@ -115,6 +116,9 @@ namespace SmartShop.API.Services
         {
             try
             {
+                product.CreatedDate = _dateTimeProvider.UtcNow;
+                product.UpdatedDate = _dateTimeProvider.UtcNow;
+
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
@@ -165,6 +169,5 @@ namespace SmartShop.API.Services
                     StatusCodes.Status500InternalServerError);
             }
         }
-
     }
 }
