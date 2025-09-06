@@ -115,6 +115,11 @@ namespace SmartShop.API.Services
         {
             try
             {
+                // Ensure the product Id is initialized
+                if (product.Id == Guid.Empty)
+                {
+                    product.Id = Guid.NewGuid();
+                }
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
 
