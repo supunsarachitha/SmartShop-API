@@ -27,6 +27,13 @@ namespace SmartShop.API.Services
 
             if (user != null)
             {
+                // Hash the input password before comparing
+                var hashedInputPassword = HashPassword(password);
+                if (user.Password != hashedInputPassword)
+                {
+                    return new UserAuthenticationResponse { IsAuthenticated = false };
+                }
+
                 // Update last login timestamp
                 user.LastLoginDate = DateTime.UtcNow;
                 _context.SaveChanges();
@@ -170,11 +177,59 @@ namespace SmartShop.API.Services
                         StatusCodes.Status404NotFound);
                 }
 
-                user.UserName = updatedUser.UserName;
-                user.Email = updatedUser.Email;
-                user.Password = updatedUser.Password;
-                user.Name = updatedUser.Name;
-                user.Role = updatedUser.Role;
+                // Validate and selectively update UserName
+                if (!string.IsNullOrWhiteSpace(updatedUser.UserName))
+                {
+                    if (updatedUser.UserName.Length > 100)
+                    {
+                        return ResponseFactory.CreateErrorResponse<User>(
+                            "UserName exceeds maximum length.",
+                            "UserName",
+                            "UserName must be at most 100 characters.",
+                            StatusCodes.Status400BadRequest);
+                    }
+                    user.UserName = updatedUser.UserName;
+                }
+
+                // Validate and selectively update Email
+                if (!string.IsNullOrWhiteSpace(updatedUser.Email))
+                {
+                    if (updatedUser.Email.Length > 256)
+                    {
+                        return ResponseFactory.CreateErrorResponse<User>(
+                            "Email exceeds maximum length.",
+                            "Email",
+                            "Email must be at most 256 characters.",
+                            StatusCodes.Status400BadRequest);
+                    }
+                    user.Email = updatedUser.Email;
+                }
+
+                // Validate password (example: minimum length 8, contains number, etc.)
+                if (!string.IsNullOrWhiteSpace(updatedUser.Password))
+                {
+                    if (updatedUser.Password.Length < 8 ||
+                        !updatedUser.Password.Any(char.IsDigit) ||
+                        !updatedUser.Password.Any(char.IsLetter))
+                    {
+                        return ResponseFactory.CreateErrorResponse<User>(
+                            "Password does not meet complexity requirements.",
+                            "Password",
+                            "Password must be at least 8 characters long and contain both letters and numbers.",
+                            StatusCodes.Status400BadRequest);
+                    }
+
+                    // Hash password before storing
+                    user.Password = HashPassword(updatedUser.Password);
+                }
+
+                // Selectively update other fields
+                if (!string.IsNullOrWhiteSpace(updatedUser.Name))
+                    user.Name = updatedUser.Name;
+
+                if (updatedUser.Role != null)
+                    user.Role = updatedUser.Role;
+
                 user.IsActive = updatedUser.IsActive;
                 user.UpdatedDate = _dateTimeProvider.UtcNow;
 
@@ -194,6 +249,15 @@ namespace SmartShop.API.Services
                     ex.Message,
                     StatusCodes.Status500InternalServerError);
             }
+        }
+
+        // Simple password hashing using SHA256 (for demonstration; use a stronger method like BCrypt in production)
+        private static string HashPassword(string password)
+        {
+            using var sha256 = System.Security.Cryptography.SHA256.Create();
+            var bytes = System.Text.Encoding.UTF8.GetBytes(password);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
 
         public async Task<ApplicationResponse<bool>> UserExistsAsync(Guid id)
