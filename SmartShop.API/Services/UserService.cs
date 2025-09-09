@@ -62,8 +62,8 @@ namespace SmartShop.API.Services
                 user.CreatedDate = _dateTimeProvider.UtcNow;
                 user.UpdatedDate = _dateTimeProvider.UtcNow;
                 user.IsActive = true;
-
-                await _context.Users.AddAsync(user);
+                 
+                _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
                 return ResponseFactory.CreateSuccessResponse(
