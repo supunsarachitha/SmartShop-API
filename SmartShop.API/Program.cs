@@ -20,7 +20,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IPaymentMethods, PaymentMethod>();
+builder.Services.AddScoped<IPaymentMethods, PaymentMethodsService>();
 
 
 builder.Services.AddControllers();
