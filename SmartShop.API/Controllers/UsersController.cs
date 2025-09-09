@@ -1,117 +1,76 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SmartShop.API.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using SmartShop.API.Interfaces;
+using SmartShop.API.Models; 
 
 namespace SmartShop.API.Controllers
 {
     /// <summary>
     /// Provides endpoints for managing user data in the system.
     /// </summary>
-    /// <remarks>This controller handles CRUD operations for user entities, including retrieving, creating,
-    /// updating, and deleting users. All endpoints in this controller require authorization, as indicated by the <see
-    /// cref="AuthorizeAttribute" />. The base route for this controller is "api/Users".</remarks>
+    /// <remarks>
+    /// This controller handles CRUD operations for user entities, including retrieving, creating,
+    /// updating, and deleting users. All endpoints in this controller require authorization.
+    /// The base route for this controller is "api/Users".
+    /// </remarks>
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/[controller]")] 
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly SmartShopDbContext _context;
-        private readonly ILogger<CustomersController> _logger;
+        private readonly ILogger<UsersController> _logger;
+        private readonly IUserService _userService;
 
-        public UsersController(SmartShopDbContext context, ILogger<CustomersController> logger)
+        public UsersController(ILogger<UsersController> logger, IUserService userService)
         {
-            _context = context;
             _logger = logger;
+            _userService = userService;
         }
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var response = await _userService.GetAllUsersAsync();
+            return StatusCode(response.StatusCode ?? StatusCodes.Status200OK, response);
         }
 
-        // GET: api/Users/5
+        // GET: api/Users/guid
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUsers(Guid id)
+        public async Task<IActionResult> GetUser(Guid id)
         {
-            var users = await _context.Users.FindAsync(id);
-
-            if (users == null)
-            {
-                return NotFound();
-            }
-
-            return users;
+            var response = await _userService.GetUserByIdAsync(id);
+            return StatusCode(response.StatusCode ?? StatusCodes.Status200OK, response);
         }
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsers(Guid id, User users)
+        public async Task<IActionResult> PutUser(Guid id, User user)
         {
-            if (id != users.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(users).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsersExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var response = await _userService.UpdateUserAsync(id, user);
+            return StatusCode(response.StatusCode ?? StatusCodes.Status400BadRequest, response);
         }
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUsers(User users)
+        public async Task<IActionResult> PostUser(User user)
         {
-            _context.Users.Add(users);
-            await _context.SaveChangesAsync();
+            var response = await _userService.CreateUserAsync(user);
 
-            return CreatedAtAction("GetUsers", new { id = users.Id }, users);
+            if (!response.Success)
+                return StatusCode(response.StatusCode ?? StatusCodes.Status400BadRequest, response);
+
+            return CreatedAtAction(nameof(GetUser), new { id = response.Data.Id }, response);
         }
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUsers(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var users = await _context.Users.FindAsync(id);
-            if (users == null)
-            {
-                return NotFound();
-            }
-
-            _context.Users.Remove(users);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool UsersExists(Guid id)
-        {
-            return _context.Users.Any(e => e.Id == id);
+            var response = await _userService.DeleteUserAsync(id);
+            return StatusCode(response.StatusCode ?? StatusCodes.Status400BadRequest, response);
         }
     }
 }
