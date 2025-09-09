@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartShop.API.Interfaces;
-using SmartShop.API.Models; 
+using SmartShop.API.Models;
+using SmartShop.API.Models.Responses;
 
 namespace SmartShop.API.Controllers
 {
@@ -62,6 +63,17 @@ namespace SmartShop.API.Controllers
             if (!response.Success)
                 return StatusCode(response.StatusCode ?? StatusCodes.Status400BadRequest, response);
 
+            if (response.Data == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApplicationResponse<User>
+                {
+                    Success = false,
+                    Message = "No user data was returned.",
+                    Data = default!, // Use default! to satisfy non-nullable reference type
+                    StatusCode = StatusCodes.Status500InternalServerError
+                });
+            }
+                
             return CreatedAtAction(nameof(GetUser), new { id = response.Data.Id }, response);
         }
 
