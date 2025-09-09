@@ -58,7 +58,6 @@ namespace SmartShop.API.Services
                         StatusCodes.Status400BadRequest);
                 }
 
-                user.Id = Guid.NewGuid();
                 user.CreatedDate = _dateTimeProvider.UtcNow;
                 user.UpdatedDate = _dateTimeProvider.UtcNow;
                 user.IsActive = true;
