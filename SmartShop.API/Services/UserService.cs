@@ -27,9 +27,8 @@ namespace SmartShop.API.Services
 
             if (user != null)
             {
-                // Hash the input password before comparing
-                var hashedInputPassword = HashPassword(password);
-                if (user.Password != hashedInputPassword)
+                // Use VerifyPassword to check the password against the stored hash
+                if (!VerifyPassword(password, user.Password))
                 {
                     return new UserAuthenticationResponse { IsAuthenticated = false };
                 }
@@ -250,34 +249,17 @@ namespace SmartShop.API.Services
                     StatusCodes.Status500InternalServerError);
             }
         }
-
-        // Simple password hashing using SHA256 (for demonstration; use a stronger method like BCrypt in production)
+         
         private static string HashPassword(string password)
         {
-            using var sha256 = System.Security.Cryptography.SHA256.Create();
-            var bytes = System.Text.Encoding.UTF8.GetBytes(password);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
+            // BCrypt automatically generates a salt and hashes the password securely
+            return BCrypt.Net.BCrypt.HashPassword(password);
         }
 
-        public async Task<ApplicationResponse<bool>> UserExistsAsync(Guid id)
+        private static bool VerifyPassword(string password, string hashedPassword)
         {
-            try
-            {
-                var exists = await _context.Users.AnyAsync(u => u.Id == id);
-                return ResponseFactory.CreateSuccessResponse(
-                    exists,
-                    exists ? "User exists." : "User does not exist.",
-                    StatusCodes.Status200OK);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.CreateErrorResponse<bool>(
-                    "Failed to check user existence.",
-                    "Exception",
-                    ex.Message,
-                    StatusCodes.Status500InternalServerError);
-            }
-        }
+            // Verifies the password against the hashed password
+            return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
+        } 
     }
 }
