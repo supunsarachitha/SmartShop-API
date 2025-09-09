@@ -10,9 +10,12 @@ namespace SmartShop.API.Services
     {
         private readonly SmartShopDbContext _context;
 
-        public CustomerService(SmartShopDbContext context)
+        private readonly IDateTimeProvider _dateTimeProvider;
+
+        public CustomerService(SmartShopDbContext context, IDateTimeProvider dateTimeProvider)
         {
             _context = context;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<ApplicationResponse<List<Customer>>> GetAllCustomersAsync()
@@ -20,8 +23,6 @@ namespace SmartShop.API.Services
             try
             {
                 var customers = await _context.Customers.ToListAsync();
-
-                // Return 200 OK with an empty array if no customers are found
                 return ResponseFactory.CreateSuccessResponse(
                     customers,
                     "Customers retrieved successfully.",
@@ -42,7 +43,6 @@ namespace SmartShop.API.Services
             try
             {
                 var customer = await _context.Customers.FindAsync(id);
-
                 if (customer == null)
                 {
                     return ResponseFactory.CreateErrorResponse<Customer>(
@@ -51,7 +51,6 @@ namespace SmartShop.API.Services
                         "No customer found with the specified ID.",
                         StatusCodes.Status404NotFound);
                 }
-
                 return ResponseFactory.CreateSuccessResponse(
                     customer,
                     "Customer retrieved successfully.",
@@ -67,6 +66,7 @@ namespace SmartShop.API.Services
             }
         }
 
+        // Replace all usages of DateTime.UtcNow with _dateTimeProvider.UtcNow
         public async Task<ApplicationResponse<Customer>> UpdateCustomerAsync(Guid id, Customer customer)
         {
             if (id != customer.Id)
@@ -78,7 +78,6 @@ namespace SmartShop.API.Services
                     StatusCodes.Status400BadRequest);
             }
 
-            // Check if customer exists before updating
             var existingCustomer = await _context.Customers.FindAsync(id);
             if (existingCustomer == null)
             {
@@ -89,15 +88,28 @@ namespace SmartShop.API.Services
                     StatusCodes.Status404NotFound);
             }
 
+            // Prevent email duplication on update
+            if (!string.Equals(existingCustomer.Email, customer.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                var emailExists = await _context.Customers.AnyAsync(c => c.Email == customer.Email && c.Id != id);
+                if (emailExists)
+                {
+                    return ResponseFactory.CreateErrorResponse<Customer>(
+                        "Duplicate email detected.",
+                        "Email",
+                        "Another customer with this email already exists.",
+                        StatusCodes.Status409Conflict);
+                }
+            }
+
             existingCustomer.Name = customer.Name;
             existingCustomer.Email = customer.Email;
             existingCustomer.Phone = customer.Phone;
-            existingCustomer.UpdatedDate = DateTime.UtcNow;
+            existingCustomer.UpdatedDate = _dateTimeProvider.UtcNow;
 
             try
             {
                 await _context.SaveChangesAsync();
-
                 return ResponseFactory.CreateSuccessResponse(
                     existingCustomer,
                     "Customer updated successfully.",
@@ -118,19 +130,21 @@ namespace SmartShop.API.Services
             try
             {
                 var emailExists = await _context.Customers.AnyAsync(c => c.Email == customer.Email);
-                
                 if (emailExists)
                 {
                     return ResponseFactory.CreateErrorResponse<Customer>(
                         "Duplicate email detected.",
                         "Email",
                         "Another customer with this email already exists.",
-                        StatusCodes.Status409Conflict); // 409 = Conflict
+                        StatusCodes.Status409Conflict);
                 }
+
+                customer.Id = Guid.NewGuid();
+                customer.CreatedDate = _dateTimeProvider.UtcNow;
+                customer.UpdatedDate = _dateTimeProvider.UtcNow;
 
                 _context.Customers.Add(customer);
                 await _context.SaveChangesAsync();
-
                 return ResponseFactory.CreateSuccessResponse(
                     customer,
                     "Customer created successfully.",
@@ -151,7 +165,6 @@ namespace SmartShop.API.Services
             try
             {
                 var customer = await _context.Customers.FindAsync(id);
-
                 if (customer == null)
                 {
                     return ResponseFactory.CreateErrorResponse<Customer>(
@@ -163,7 +176,6 @@ namespace SmartShop.API.Services
 
                 _context.Customers.Remove(customer);
                 await _context.SaveChangesAsync();
-
                 return ResponseFactory.CreateSuccessResponse(
                     customer,
                     "Customer deleted successfully.",

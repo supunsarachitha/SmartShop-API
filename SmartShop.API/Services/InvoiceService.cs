@@ -19,28 +19,39 @@ namespace SmartShop.API.Services
 
         public async Task<ApplicationResponse<Invoice>> CreateInvoiceAsync(Invoice invoice)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                if (invoice == null || invoice.Items == null || !invoice.Items.Any())
+                {
+                    return ResponseFactory.CreateErrorResponse<Invoice>(
+                        "Invalid invoice data.",
+                        "Invoice",
+                        "Invoice or items are missing.",
+                        StatusCodes.Status400BadRequest);
+                }
+
                 invoice.Id = Guid.NewGuid();
                 invoice.InvoiceDate = _dateTimeProvider.UtcNow;
                 invoice.InvoiceNumber = $"INV-{_dateTimeProvider.UtcNow:yyyyMMddHHmmss}-{invoice.Id.ToString().Substring(0, 8)}";
-                invoice.Total = invoice.Items?.Sum(i =>
+
+                var productIds = invoice.Items.Select(i => i.ProductId).Distinct().ToList();
+                var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
+
+                invoice.Total = invoice.Items.Sum(i =>
                 {
-                    var product = _context.Products.Find(i.ProductId);
+                    var product = products.FirstOrDefault(p => p.Id == i.ProductId);
                     return product != null ? product.Price * i.Quantity : 0;
-                }) ?? 0;
+                });
 
                 _context.Invoices.Add(invoice);
 
-                if (invoice.Items != null && invoice.Items.Count > 0)
+                foreach (var item in invoice.Items)
                 {
-                    foreach (var item in invoice.Items)
-                    {
-                        item.Id = Guid.NewGuid();
-                        item.InvoiceId = invoice.Id;
-                        _context.InvoiceItems.Add(item);
-                    }
+                    item.Id = Guid.NewGuid();
+                    item.InvoiceId = invoice.Id;
                 }
+                _context.InvoiceItems.AddRange(invoice.Items);
 
                 if (invoice.Payments != null && invoice.Payments.Count > 0)
                 {
@@ -49,11 +60,12 @@ namespace SmartShop.API.Services
                         payment.Id = Guid.NewGuid();
                         payment.InvoiceId = invoice.Id;
                         payment.Date = _dateTimeProvider.UtcNow;
-                        _context.Payments.Add(payment);
                     }
+                    _context.Payments.AddRange(invoice.Payments);
                 }
 
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
                 return ResponseFactory.CreateSuccessResponse(
                     invoice,
@@ -62,6 +74,7 @@ namespace SmartShop.API.Services
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return ResponseFactory.CreateErrorResponse<Invoice>(
                     "Failed to create invoice.",
                     "Exception",
@@ -174,6 +187,7 @@ namespace SmartShop.API.Services
 
         public async Task<ApplicationResponse<Invoice>> UpdateInvoiceAsync(Guid id, Invoice invoice)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 var existingInvoice = await _context.Invoices
@@ -193,9 +207,13 @@ namespace SmartShop.API.Services
                 existingInvoice.CustomerId = invoice.CustomerId;
                 existingInvoice.Status = invoice.Status;
                 existingInvoice.InvoiceDate = invoice.InvoiceDate;
+
+                var productIds = invoice.Items?.Select(i => i.ProductId).Distinct().ToList() ?? new List<Guid>();
+                var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
+
                 existingInvoice.Total = invoice.Items?.Sum(i =>
                 {
-                    var product = _context.Products.Find(i.ProductId);
+                    var product = products.FirstOrDefault(p => p.Id == i.ProductId);
                     return product != null ? product.Price * i.Quantity : 0;
                 }) ?? 0;
 
@@ -207,8 +225,8 @@ namespace SmartShop.API.Services
                     {
                         item.Id = Guid.NewGuid();
                         item.InvoiceId = existingInvoice.Id;
-                        _context.InvoiceItems.Add(item);
                     }
+                    _context.InvoiceItems.AddRange(invoice.Items);
                 }
 
                 // Update Payments
@@ -220,11 +238,12 @@ namespace SmartShop.API.Services
                         payment.Id = Guid.NewGuid();
                         payment.InvoiceId = existingInvoice.Id;
                         payment.Date = _dateTimeProvider.UtcNow;
-                        _context.Payments.Add(payment);
                     }
+                    _context.Payments.AddRange(invoice.Payments);
                 }
 
                 await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
 
                 return ResponseFactory.CreateSuccessResponse(
                     existingInvoice,
@@ -233,6 +252,7 @@ namespace SmartShop.API.Services
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return ResponseFactory.CreateErrorResponse<Invoice>(
                     "Failed to update invoice.",
                     "Exception",
