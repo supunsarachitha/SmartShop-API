@@ -33,8 +33,8 @@ namespace SmartShop.API.Services
                     return new UserAuthenticationResponse { IsAuthenticated = false };
                 }
 
-                // Update last login timestamp
-                user.LastLoginDate = DateTime.UtcNow;
+                // Update last login timestamp using IDateTimeProvider
+                user.LastLoginDate = _dateTimeProvider.UtcNow;
                 _context.SaveChanges();
 
                 return new UserAuthenticationResponse { IsAuthenticated = true, User = user };
@@ -44,7 +44,7 @@ namespace SmartShop.API.Services
                 return new UserAuthenticationResponse { IsAuthenticated = false };
             }
         }
-
+         
         public async Task<ApplicationResponse<User>> CreateUserAsync(User user)
         {
             try
@@ -52,9 +52,9 @@ namespace SmartShop.API.Services
                 if (user == null)
                 {
                     return ResponseFactory.CreateErrorResponse<User>(
-                        "User object is null.",
+                        "Failed to create user because the provided user object is null.",
                         "User",
-                        "User object is null.",
+                        "The input user object was null. Please provide a valid user.",
                         StatusCodes.Status400BadRequest);
                 }
 
@@ -74,13 +74,13 @@ namespace SmartShop.API.Services
             catch (Exception ex)
             {
                 return ResponseFactory.CreateErrorResponse<User>(
-                    "User creation failed.",
+                    "An unexpected error occurred while creating the user.",
                     "Exception",
-                    ex.Message,
+                    $"Exception message: {ex.Message}",
                     StatusCodes.Status500InternalServerError);
             }
         }
-
+         
         public async Task<ApplicationResponse<User>> DeleteUserAsync(Guid id)
         {
             try
@@ -89,9 +89,9 @@ namespace SmartShop.API.Services
                 if (user == null)
                 {
                     return ResponseFactory.CreateErrorResponse<User>(
-                        "User not found.",
+                        "Unable to delete user because the user was not found.",
                         "Id",
-                        "No user found with the specified ID.",
+                        $"No user exists with the specified ID: {id}.",
                         StatusCodes.Status404NotFound);
                 }
 
@@ -106,13 +106,14 @@ namespace SmartShop.API.Services
             catch (Exception ex)
             {
                 return ResponseFactory.CreateErrorResponse<User>(
-                    "User deletion failed.",
+                    "An error occurred while deleting the user.",
                     "Exception",
-                    ex.Message,
+                    $"Exception message: {ex.Message}",
                     StatusCodes.Status500InternalServerError);
             }
         }
 
+        
         public async Task<ApplicationResponse<List<User>>> GetAllUsersAsync()
         {
             try
@@ -126,13 +127,14 @@ namespace SmartShop.API.Services
             catch (Exception ex)
             {
                 return ResponseFactory.CreateErrorResponse<List<User>>(
-                    "Failed to retrieve users.",
+                    "An error occurred while retrieving the list of users.",
                     "Exception",
-                    ex.Message,
+                    $"Exception message: {ex.Message}",
                     StatusCodes.Status500InternalServerError);
             }
         }
 
+        // Example change for GetUserByIdAsync method
         public async Task<ApplicationResponse<User>> GetUserByIdAsync(Guid id)
         {
             try
@@ -141,9 +143,9 @@ namespace SmartShop.API.Services
                 if (user == null)
                 {
                     return ResponseFactory.CreateErrorResponse<User>(
-                        "User not found.",
+                        "User retrieval failed because the user was not found.",
                         "Id",
-                        "No user found with the specified ID.",
+                        $"No user exists with the specified ID: {id}.",
                         StatusCodes.Status404NotFound);
                 }
 
@@ -155,9 +157,9 @@ namespace SmartShop.API.Services
             catch (Exception ex)
             {
                 return ResponseFactory.CreateErrorResponse<User>(
-                    "Failed to retrieve user.",
+                    "An error occurred while retrieving the user.",
                     "Exception",
-                    ex.Message,
+                    $"Exception message: {ex.Message}",
                     StatusCodes.Status500InternalServerError);
             }
         }
@@ -170,9 +172,9 @@ namespace SmartShop.API.Services
                 if (user == null)
                 {
                     return ResponseFactory.CreateErrorResponse<User>(
-                        "User not found.",
+                        "User update failed because the user was not found.",
                         "Id",
-                        "No user found with the specified ID.",
+                        $"No user exists with the specified ID: {id}.",
                         StatusCodes.Status404NotFound);
                 }
 
@@ -182,7 +184,7 @@ namespace SmartShop.API.Services
                     if (updatedUser.UserName.Length > 100)
                     {
                         return ResponseFactory.CreateErrorResponse<User>(
-                            "UserName exceeds maximum length.",
+                            "UserName update failed due to exceeding maximum length.",
                             "UserName",
                             "UserName must be at most 100 characters.",
                             StatusCodes.Status400BadRequest);
@@ -196,15 +198,14 @@ namespace SmartShop.API.Services
                     if (updatedUser.Email.Length > 256)
                     {
                         return ResponseFactory.CreateErrorResponse<User>(
-                            "Email exceeds maximum length.",
+                            "Email update failed due to exceeding maximum length.",
                             "Email",
                             "Email must be at most 256 characters.",
                             StatusCodes.Status400BadRequest);
                     }
                     user.Email = updatedUser.Email;
                 }
-
-                // Validate password (example: minimum length 8, contains number, etc.)
+                 
                 if (!string.IsNullOrWhiteSpace(updatedUser.Password))
                 {
                     if (updatedUser.Password.Length < 8 ||
@@ -212,7 +213,7 @@ namespace SmartShop.API.Services
                         !updatedUser.Password.Any(char.IsLetter))
                     {
                         return ResponseFactory.CreateErrorResponse<User>(
-                            "Password does not meet complexity requirements.",
+                            "Password update failed due to not meeting complexity requirements.",
                             "Password",
                             "Password must be at least 8 characters long and contain both letters and numbers.",
                             StatusCodes.Status400BadRequest);
@@ -243,9 +244,9 @@ namespace SmartShop.API.Services
             catch (Exception ex)
             {
                 return ResponseFactory.CreateErrorResponse<User>(
-                    "User update failed.",
+                    "An error occurred while updating the user.",
                     "Exception",
-                    ex.Message,
+                    $"Exception message: {ex.Message}",
                     StatusCodes.Status500InternalServerError);
             }
         }
