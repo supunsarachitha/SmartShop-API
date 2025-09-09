@@ -9,10 +9,12 @@ namespace SmartShop.API.Services
     public class InvoiceService : IInvoiceService
     {
         private readonly SmartShopDbContext _context;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public InvoiceService(SmartShopDbContext context)
+        public InvoiceService(SmartShopDbContext context, IDateTimeProvider dateTimeProvider)
         {
             _context = context;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<ApplicationResponse<Invoice>> CreateInvoiceAsync(Invoice invoice)
@@ -20,8 +22,8 @@ namespace SmartShop.API.Services
             try
             {
                 invoice.Id = Guid.NewGuid();
-                invoice.InvoiceDate = DateTime.UtcNow;
-                invoice.InvoiceNumber = $"INV-{DateTime.UtcNow:yyyyMMddHHmmss}-{invoice.Id.ToString().Substring(0, 8)}";
+                invoice.InvoiceDate = _dateTimeProvider.UtcNow;
+                invoice.InvoiceNumber = $"INV-{_dateTimeProvider.UtcNow:yyyyMMddHHmmss}-{invoice.Id.ToString().Substring(0, 8)}";
                 invoice.Total = invoice.Items?.Sum(i =>
                 {
                     var product = _context.Products.Find(i.ProductId);
@@ -46,7 +48,7 @@ namespace SmartShop.API.Services
                     {
                         payment.Id = Guid.NewGuid();
                         payment.InvoiceId = invoice.Id;
-                        payment.Date = DateTime.UtcNow;
+                        payment.Date = _dateTimeProvider.UtcNow;
                         _context.Payments.Add(payment);
                     }
                 }
@@ -217,7 +219,7 @@ namespace SmartShop.API.Services
                     {
                         payment.Id = Guid.NewGuid();
                         payment.InvoiceId = existingInvoice.Id;
-                        payment.Date = DateTime.UtcNow;
+                        payment.Date = _dateTimeProvider.UtcNow;
                         _context.Payments.Add(payment);
                     }
                 }
