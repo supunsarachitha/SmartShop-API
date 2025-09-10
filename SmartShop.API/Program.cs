@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SmartShop.API.Common;
 using SmartShop.API.Interfaces;
 using SmartShop.API.Models;
 using SmartShop.API.Services;
@@ -21,6 +22,11 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentMethods, PaymentMethodsService>();
+builder.Services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
 
 builder.Services.AddControllers();
