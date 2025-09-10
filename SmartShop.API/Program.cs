@@ -23,10 +23,8 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentMethods, PaymentMethodsService>();
 builder.Services.AddScoped<IDateTimeProvider, DateTimeProvider>();
-builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>(); 
+builder.Services.AddScoped<IUserService, UserService>(); 
 
 
 builder.Services.AddControllers();
