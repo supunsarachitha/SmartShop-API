@@ -4,6 +4,9 @@
 
 [![.NET](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dotnet.yml/badge.svg)](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dotnet.yml)
 [![Dependency Review](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dependency-review.yml)
+![License](https://img.shields.io/github/license/supunsarachitha/SmartShop-API)
+![Last Commit](https://img.shields.io/github/last-commit/supunsarachitha/SmartShop-API)
+![Top Language](https://img.shields.io/github/languages/top/supunsarachitha/SmartShop-API)
 
 SmartShop API is a **.NET-based backend service** designed to power e-commerce applications.  
 It provides endpoints for managing products, categories, customers, and orders, enabling developers to build scalable and maintainable online store solutions.
