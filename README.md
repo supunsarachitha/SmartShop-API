@@ -108,6 +108,7 @@ Run unit tests with:
 ```bash
 dotnet test
 ```
+- [Unit Test Guide](UNIT_TEST.md)
 
 ---
 
