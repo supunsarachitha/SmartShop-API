@@ -191,5 +191,3 @@ namespace SmartShop.UnitTests
     }
 
 }
-
-
