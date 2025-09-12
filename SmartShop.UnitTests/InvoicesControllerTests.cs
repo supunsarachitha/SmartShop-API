@@ -98,7 +98,7 @@ namespace SmartShop.UnitTests
 
             var createdResult = Assert.IsType<CreatedAtActionResult>(result);
             Assert.Equal(nameof(_controller.GetInvoice), createdResult.ActionName);
-            Assert.Equal(invoice.Id, ((dynamic)createdResult.RouteValues)["id"]);
+            Assert.Equal(invoice.Id, createdResult.RouteValues != null ? createdResult.RouteValues["id"] : null);
             Assert.Equal(response, createdResult.Value);
         }
 
