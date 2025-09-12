@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using SmartShop.API.Interfaces;
 using SmartShop.API.Models;
 using SmartShop.API.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+
 
 namespace SmartShop.API.Controllers
 {
