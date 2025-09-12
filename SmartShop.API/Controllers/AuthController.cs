@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using SmartShop.API.Interfaces;
-using SmartShop.API.Models;
 using SmartShop.API.Models.Requests;
 using SmartShop.API.Models.Responses;
-using SmartShop.API.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace SmartShop.API.Controllers
 { 
@@ -28,9 +22,24 @@ namespace SmartShop.API.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
+            if (request == null)
+            {
+                return BadRequest(new ApplicationResponse<object>
+                {
+                    Success = false,
+                    Message = "Invalid request",
+                    Data = null,
+                    Errors = new List<ErrorDetail>
+                    {
+                        new ErrorDetail { Field = "Request", Message = "Request body is required" }
+                    },
+                    StatusCode = 400
+                }); 
+            }
+
             UserAuthenticationResponse auth = _userService.Authenticate(request.UserName, request.Password);
 
-            if (auth.IsAuthenticated)
+            if (auth != null && auth.IsAuthenticated)
             {
                 var token = _tokenService.GenerateJwtToken(auth.User.UserName); 
 
