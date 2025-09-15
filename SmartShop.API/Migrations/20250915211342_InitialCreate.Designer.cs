@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SmartShop.API.Migrations
 {
     [DbContext(typeof(SmartShopDbContext))]
-    [Migration("20250910203133_settings")]
-    partial class settings
+    [Migration("20250915211342_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -187,39 +187,6 @@ namespace SmartShop.API.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("SmartShop.API.Models.Setting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("DataType")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Settings");
-                });
-
             modelBuilder.Entity("SmartShop.API.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -247,7 +214,7 @@ namespace SmartShop.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("Role")
+                    b.Property<Guid?>("RoleId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -261,6 +228,64 @@ namespace SmartShop.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a1b2c3d4-e5f6-4789-abcd-1234567890ab"),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "admin@smartshop.local",
+                            IsActive = true,
+                            Name = "System Administrator",
+                            Password = "$2a$12$cfShxSPzeorednTNM/ro2eT75uJJRB4vbQAcFA6d/RsiItoFtlr8W",
+                            RoleId = new Guid("0b4cf409-41a3-448c-9dfd-393906be62a1"),
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            UserName = "admin"
+                        });
+                });
+
+            modelBuilder.Entity("SmartShop.API.Models.UserRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("0b4cf409-41a3-448c-9dfd-393906be62a1"),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "System administrator with full access",
+                            Name = "SysAdmin",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = new Guid("e2a1f7b2-7c4a-4b7e-8e2d-1a2b3c4d5e6f"),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Store administrator with store-level access",
+                            Name = "StoreAdmin",
+                            UpdatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        });
                 });
 
             modelBuilder.Entity("SmartShop.API.Models.InvoiceItem", b =>

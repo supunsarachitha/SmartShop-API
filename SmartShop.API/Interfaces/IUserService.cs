@@ -7,10 +7,10 @@ namespace SmartShop.API.Interfaces
     {
         UserAuthenticationResponse Authenticate(string userName, string password);
 
-        Task<ApplicationResponse<List<User>>> GetAllUsersAsync();
-        Task<ApplicationResponse<User>> GetUserByIdAsync(Guid id);
-        Task<ApplicationResponse<User>> CreateUserAsync(User user);
-        Task<ApplicationResponse<User>> UpdateUserAsync(Guid id, User user);
-        Task<ApplicationResponse<User>> DeleteUserAsync(Guid id); 
+        Task<ApplicationResponse<List<UserDto>>> GetAllUsersAsync();
+        Task<ApplicationResponse<UserDto>> GetUserByIdAsync(Guid id);
+        Task<ApplicationResponse<UserDto>> CreateUserAsync(User user);
+        Task<ApplicationResponse<UserDto>> UpdateUserAsync(Guid id, User user);
+        Task<ApplicationResponse<UserDto>> DeleteUserAsync(Guid id); 
     }
 }

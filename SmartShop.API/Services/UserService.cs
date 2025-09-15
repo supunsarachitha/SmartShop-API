@@ -45,34 +45,47 @@ namespace SmartShop.API.Services
             }
         }
          
-        public async Task<ApplicationResponse<User>> CreateUserAsync(User user)
+        public async Task<ApplicationResponse<UserDto>> CreateUserAsync(User user)
         {
             try
             {
                 if (user == null)
                 {
-                    return ResponseFactory.CreateErrorResponse<User>(
+                    return ResponseFactory.CreateErrorResponse<UserDto>(
                         "Failed to create user because the provided user object is null.",
                         "User",
                         "The input user object was null. Please provide a valid user.",
                         StatusCodes.Status400BadRequest);
                 }
 
+                // Check if a user with the same UserName or Email already exists
+                var existingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.UserName == user.UserName || u.Email == user.Email);
+
+                if (existingUser != null)
+                {
+                    return ResponseFactory.CreateErrorResponse<UserDto>(
+                        "Failed to create user because a user with the same UserName or Email already exists.",
+                        "User",
+                        "A user with the same UserName or Email already exists. Please use unique values.",
+                        StatusCodes.Status409Conflict);
+                }
+
                 user.CreatedDate = _dateTimeProvider.UtcNow;
                 user.UpdatedDate = _dateTimeProvider.UtcNow;
                 user.IsActive = true;
-                 
+
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
                 return ResponseFactory.CreateSuccessResponse(
-                    user,
+                    MapUserToDto(user),
                     "User created successfully.",
                     StatusCodes.Status201Created);
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateErrorResponse<User>(
+                return ResponseFactory.CreateErrorResponse<UserDto>(
                     "An unexpected error occurred while creating the user.",
                     "Exception",
                     $"Exception message: {ex.Message}",
@@ -80,14 +93,14 @@ namespace SmartShop.API.Services
             }
         }
          
-        public async Task<ApplicationResponse<User>> DeleteUserAsync(Guid id)
+        public async Task<ApplicationResponse<UserDto>> DeleteUserAsync(Guid id)
         {
             try
             {
                 var user = await _context.Users.FindAsync(id);
                 if (user == null)
                 {
-                    return ResponseFactory.CreateErrorResponse<User>(
+                    return ResponseFactory.CreateErrorResponse<UserDto>(
                         "Unable to delete user because the user was not found.",
                         "Id",
                         $"No user exists with the specified ID: {id}.",
@@ -96,15 +109,15 @@ namespace SmartShop.API.Services
 
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
-
+                 
                 return ResponseFactory.CreateSuccessResponse(
-                    user,
+                    MapUserToDto(user),
                     "User deleted successfully.",
                     StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateErrorResponse<User>(
+                return ResponseFactory.CreateErrorResponse<UserDto>(
                     "An error occurred while deleting the user.",
                     "Exception",
                     $"Exception message: {ex.Message}",
@@ -113,19 +126,34 @@ namespace SmartShop.API.Services
         }
 
         
-        public async Task<ApplicationResponse<List<User>>> GetAllUsersAsync()
+        public async Task<ApplicationResponse<List<UserDto>>> GetAllUsersAsync()
         {
             try
             {
                 var users = await _context.Users.ToListAsync();
+
+                var userDtos = users.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    Email = u.Email,
+                    Name = u.Name,
+                    RoleID = u.RoleId,
+                    IsActive = u.IsActive,
+                    LastLoginDate = u.LastLoginDate,
+                    CreatedDate = u.CreatedDate,
+                    UpdatedDate = u.UpdatedDate
+                }).ToList();
+
                 return ResponseFactory.CreateSuccessResponse(
-                    users,
+                    userDtos,
                     "Users retrieved successfully.",
                     StatusCodes.Status200OK);
+
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateErrorResponse<List<User>>(
+                return ResponseFactory.CreateErrorResponse<List<UserDto>>(
                     "An error occurred while retrieving the list of users.",
                     "Exception",
                     $"Exception message: {ex.Message}",
@@ -134,14 +162,15 @@ namespace SmartShop.API.Services
         }
 
         // Example change for GetUserByIdAsync method
-        public async Task<ApplicationResponse<User>> GetUserByIdAsync(Guid id)
+        public async Task<ApplicationResponse<UserDto>> GetUserByIdAsync(Guid id)
         {
             try
             {
                 var user = await _context.Users.FindAsync(id);
+
                 if (user == null)
                 {
-                    return ResponseFactory.CreateErrorResponse<User>(
+                    return ResponseFactory.CreateErrorResponse<UserDto>(
                         "User retrieval failed because the user was not found.",
                         "Id",
                         $"No user exists with the specified ID: {id}.",
@@ -149,13 +178,13 @@ namespace SmartShop.API.Services
                 }
 
                 return ResponseFactory.CreateSuccessResponse(
-                    user,
+                    MapUserToDto(user),
                     "User retrieved successfully.",
                     StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateErrorResponse<User>(
+                return ResponseFactory.CreateErrorResponse<UserDto>(
                     "An error occurred while retrieving the user.",
                     "Exception",
                     $"Exception message: {ex.Message}",
@@ -163,14 +192,14 @@ namespace SmartShop.API.Services
             }
         }
 
-        public async Task<ApplicationResponse<User>> UpdateUserAsync(Guid id, User updatedUser)
+        public async Task<ApplicationResponse<UserDto>> UpdateUserAsync(Guid id, User updatedUser)
         {
             try
             {
                 var user = await _context.Users.FindAsync(id);
                 if (user == null)
                 {
-                    return ResponseFactory.CreateErrorResponse<User>(
+                    return ResponseFactory.CreateErrorResponse<UserDto>(
                         "User update failed because the user was not found.",
                         "Id",
                         $"No user exists with the specified ID: {id}.",
@@ -182,7 +211,7 @@ namespace SmartShop.API.Services
                 {
                     if (updatedUser.UserName.Length > 100)
                     {
-                        return ResponseFactory.CreateErrorResponse<User>(
+                        return ResponseFactory.CreateErrorResponse<UserDto>(
                             "UserName update failed due to exceeding maximum length.",
                             "UserName",
                             "UserName must be at most 100 characters.",
@@ -196,7 +225,7 @@ namespace SmartShop.API.Services
                 {
                     if (updatedUser.Email.Length > 256)
                     {
-                        return ResponseFactory.CreateErrorResponse<User>(
+                        return ResponseFactory.CreateErrorResponse<UserDto>(
                             "Email update failed due to exceeding maximum length.",
                             "Email",
                             "Email must be at most 256 characters.",
@@ -204,14 +233,14 @@ namespace SmartShop.API.Services
                     }
                     user.Email = updatedUser.Email;
                 }
-                 
+
                 if (!string.IsNullOrWhiteSpace(updatedUser.Password))
                 {
                     if (updatedUser.Password.Length < 8 ||
                         !updatedUser.Password.Any(char.IsDigit) ||
                         !updatedUser.Password.Any(char.IsLetter))
                     {
-                        return ResponseFactory.CreateErrorResponse<User>(
+                        return ResponseFactory.CreateErrorResponse<UserDto>(
                             "Password update failed due to not meeting complexity requirements.",
                             "Password",
                             "Password must be at least 8 characters long and contain both letters and numbers.",
@@ -219,15 +248,15 @@ namespace SmartShop.API.Services
                     }
 
                     // Hash password before storing
-                    user.Password = HashPassword(updatedUser.Password);
+                    user.Password = AuthHelper.HashPassword(updatedUser.Password);
                 }
 
                 // Selectively update other fields
                 if (!string.IsNullOrWhiteSpace(updatedUser.Name))
                     user.Name = updatedUser.Name;
 
-                if (updatedUser.Role != null)
-                    user.Role = updatedUser.Role;
+                if (updatedUser.RoleId != null && updatedUser.RoleId.HasValue)
+                    user.RoleId = updatedUser.RoleId;
 
                 user.IsActive = updatedUser.IsActive;
                 user.UpdatedDate = _dateTimeProvider.UtcNow;
@@ -236,13 +265,13 @@ namespace SmartShop.API.Services
                 await _context.SaveChangesAsync();
 
                 return ResponseFactory.CreateSuccessResponse(
-                    user,
+                    MapUserToDto(user),
                     "User updated successfully.",
                     StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
-                return ResponseFactory.CreateErrorResponse<User>(
+                return ResponseFactory.CreateErrorResponse<UserDto>(
                     "An error occurred while updating the user.",
                     "Exception",
                     $"Exception message: {ex.Message}",
@@ -250,16 +279,27 @@ namespace SmartShop.API.Services
             }
         }
          
-        private static string HashPassword(string password)
-        {
-            // BCrypt automatically generates a salt and hashes the password securely
-            return BCrypt.Net.BCrypt.HashPassword(password);
-        }
 
         private static bool VerifyPassword(string password, string hashedPassword)
         {
             // Verifies the password against the hashed password
             return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-        } 
+        }
+
+        private static UserDto MapUserToDto(User user)
+        {
+            return new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Name = user.Name,
+                RoleID = user.RoleId,
+                IsActive = user.IsActive,
+                LastLoginDate = user.LastLoginDate,
+                CreatedDate = user.CreatedDate,
+                UpdatedDate = user.UpdatedDate
+            };
+        }
     }
 }

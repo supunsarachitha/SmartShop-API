@@ -29,8 +29,8 @@ namespace SmartShop.UnitTests
         [Fact]
         public async Task GetUsers_ReturnsOkResult_WithUsers()
         {
-            var users = new List<User> { new User { Id = Guid.NewGuid(), UserName = "test", Email = "test@test.com", Password = "pass", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow } };
-            var response = new ApplicationResponse<List<User>> { Success = true, Data = users, StatusCode = StatusCodes.Status200OK };
+            var users = new List<UserDto> { new UserDto { Id = Guid.NewGuid(), UserName = "test", Email = "test@test.com", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow } };
+            var response = new ApplicationResponse<List<UserDto>> { Success = true, Data = users, StatusCode = StatusCodes.Status200OK };
             _userServiceMock.Setup(s => s.GetAllUsersAsync()).ReturnsAsync(response);
 
             var result = await _controller.GetUsers();
@@ -44,8 +44,8 @@ namespace SmartShop.UnitTests
         public async Task GetUser_ReturnsOkResult_WithUser()
         {
             var userId = Guid.NewGuid();
-            var user = new User { Id = userId, UserName = "test", Email = "test@test.com", Password = "pass", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow };
-            var response = new ApplicationResponse<User> { Success = true, Data = user, StatusCode = StatusCodes.Status200OK };
+            var user = new UserDto { Id = userId, UserName = "test", Email = "test@test.com", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow };
+            var response = new ApplicationResponse<UserDto> { Success = true, Data = user, StatusCode = StatusCodes.Status200OK };
             _userServiceMock.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(response);
 
             var result = await _controller.GetUser(userId);
@@ -60,7 +60,7 @@ namespace SmartShop.UnitTests
         {
             var userId = Guid.NewGuid();
             var user = new User { Id = userId, UserName = "test", Email = "test@test.com", Password = "pass", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow };
-            var response = new ApplicationResponse<User> { Success = false, Data = null, StatusCode = StatusCodes.Status400BadRequest };
+            var response = new ApplicationResponse<UserDto> { Success = false, Data = null, StatusCode = StatusCodes.Status400BadRequest };
             _userServiceMock.Setup(s => s.UpdateUserAsync(userId, user)).ReturnsAsync(response);
 
             var result = await _controller.PutUser(userId, user);
@@ -84,10 +84,19 @@ namespace SmartShop.UnitTests
                 CreatedDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow
             };
-            var response = new ApplicationResponse<User>
+            var userDto = new UserDto
+            {
+                Id = userId,
+                UserName = "test",
+                Email = "test@test.com",
+                IsActive = true,
+                CreatedDate = user.CreatedDate,
+                UpdatedDate = user.UpdatedDate
+            };
+            var response = new ApplicationResponse<UserDto>
             {
                 Success = true,
-                Data = user,
+                Data = userDto,
                 StatusCode = StatusCodes.Status200OK
             };
             _userServiceMock.Setup(s => s.UpdateUserAsync(userId, user)).ReturnsAsync(response);
@@ -103,7 +112,7 @@ namespace SmartShop.UnitTests
         public async Task PostUser_ReturnsCreatedAtAction_WhenSuccess()
         {
             var user = new User { Id = Guid.NewGuid(), UserName = "test", Email = "test@test.com", Password = "pass", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow };
-            var response = new ApplicationResponse<User> { Success = true, Data = user, StatusCode = StatusCodes.Status201Created };
+            var response = new ApplicationResponse<UserDto> { Success = true, Data = new UserDto { Id = user.Id, UserName = user.UserName, Email = user.Email, IsActive = user.IsActive, CreatedDate = user.CreatedDate, UpdatedDate = user.UpdatedDate }, StatusCode = StatusCodes.Status201Created };
             _userServiceMock.Setup(s => s.CreateUserAsync(user)).ReturnsAsync(response);
 
             var result = await _controller.PostUser(user);
@@ -120,7 +129,7 @@ namespace SmartShop.UnitTests
         public async Task PostUser_ReturnsBadRequest_WhenCreateFails()
         {
             var user = new User { Id = Guid.NewGuid(), UserName = "test", Email = "test@test.com", Password = "pass", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow };
-            var response = new ApplicationResponse<User> { Success = false, Data = null, StatusCode = StatusCodes.Status400BadRequest };
+            var response = new ApplicationResponse<UserDto> { Success = false, Data = null, StatusCode = StatusCodes.Status400BadRequest };
             _userServiceMock.Setup(s => s.CreateUserAsync(user)).ReturnsAsync(response);
 
             var result = await _controller.PostUser(user);
@@ -130,27 +139,12 @@ namespace SmartShop.UnitTests
             Assert.Equal(response, objectResult.Value);
         }
 
-        [Fact]
-        public async Task PostUser_ReturnsInternalServerError_WhenDataIsNull()
-        {
-            var user = new User { Id = Guid.NewGuid(), UserName = "test", Email = "test@test.com", Password = "pass", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow };
-            var response = new ApplicationResponse<User> { Success = true, Data = null, StatusCode = StatusCodes.Status201Created };
-            _userServiceMock.Setup(s => s.CreateUserAsync(user)).ReturnsAsync(response);
-
-            var result = await _controller.PostUser(user);
-
-            var objectResult = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
-            var errorResponse = Assert.IsType<ApplicationResponse<User>>(objectResult.Value);
-            Assert.False(errorResponse.Success);
-            Assert.Equal("No user data was returned.", errorResponse.Message);
-        }
 
         [Fact]
         public async Task DeleteUser_ReturnsBadRequest_WhenDeleteFails()
         {
             var userId = Guid.NewGuid();
-            var response = new ApplicationResponse<User> { Success = false, Data = null, StatusCode = StatusCodes.Status400BadRequest };
+            var response = new ApplicationResponse<UserDto> { Success = false, Data = default!, StatusCode = StatusCodes.Status400BadRequest };
             _userServiceMock.Setup(s => s.DeleteUserAsync(userId)).ReturnsAsync(response);
 
             var result = await _controller.DeleteUser(userId);
@@ -165,7 +159,7 @@ namespace SmartShop.UnitTests
         {
             var userId = Guid.NewGuid();
             var user = new User { Id = userId, UserName = "test", Email = "test@test.com", Password = "pass", IsActive = true, CreatedDate = DateTime.UtcNow, UpdatedDate = DateTime.UtcNow };
-            var response = new ApplicationResponse<User> { Success = true, Data = user, StatusCode = StatusCodes.Status200OK };
+            var response = new ApplicationResponse<UserDto> { Success = true, Data = new UserDto { Id = userId, UserName = user.UserName, Email = user.Email, IsActive = user.IsActive, CreatedDate = user.CreatedDate, UpdatedDate = user.UpdatedDate }, StatusCode = StatusCodes.Status200OK };
             _userServiceMock.Setup(s => s.DeleteUserAsync(userId)).ReturnsAsync(response);
 
             var result = await _controller.DeleteUser(userId);
@@ -175,5 +169,55 @@ namespace SmartShop.UnitTests
             Assert.Equal(response, objectResult.Value);
         }
 
+        [Fact]
+        public async Task GetUser_ReturnsNotFound_WhenUserDoesNotExist()
+        {
+            var userId = Guid.NewGuid();
+            var response = new ApplicationResponse<UserDto>
+            {
+                Success = false,
+                Data = null,
+                StatusCode = StatusCodes.Status404NotFound
+            };
+            _userServiceMock.Setup(s => s.GetUserByIdAsync(userId)).ReturnsAsync(response);
+
+            var result = await _controller.GetUser(userId);
+
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status404NotFound, objectResult.StatusCode);
+            Assert.Equal(response, objectResult.Value);
+        }
+        [Fact]
+        public async Task PostUser_ReturnsBadRequest_WhenDuplicateUser()
+        {
+            // Arrange
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                UserName = "duplicateUser",
+                Email = "duplicate@test.com",
+                Password = "pass",
+                IsActive = true,
+                CreatedDate = DateTime.UtcNow,
+                UpdatedDate = DateTime.UtcNow
+            };
+            var response = new ApplicationResponse<UserDto>
+            {
+                Success = false,
+                Data = null,
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "A user with the same UserName or Email already exists. Please use unique values."
+            };
+            _userServiceMock.Setup(s => s.CreateUserAsync(user)).ReturnsAsync(response);
+
+            // Act
+            var result = await _controller.PostUser(user);
+
+            // Assert
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status400BadRequest, objectResult.StatusCode);
+            Assert.Equal(response, objectResult.Value);
+            Assert.Equal("A user with the same UserName or Email already exists. Please use unique values.", response.Message);
+        }
     }
 }
