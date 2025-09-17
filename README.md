@@ -1,5 +1,4 @@
 
-
 # 🛒 SmartShop API
 
 [![.NET](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dotnet.yml/badge.svg)](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dotnet.yml)
@@ -79,10 +78,27 @@ Create an `appsettings.json` file in `SmartShop.API/` with your database connect
 }
 ```
 
-### 4️⃣ Run Migrations
-```bash
+### Initial Database Setup and Seeding
+
+When you run the project for the first time, the database will be seeded with initial data for user roles and an admin user. This is handled in `SmartShopDbContext.OnModelCreating`.
+You can change the default admin username and password in `SmartShopDbContext.cs` before running migrations.
+
+**Sample demo seeded Data:**
+- Two roles: `SysAdmin` and `StoreAdmin`
+- One admin user:
+  - Username: `admin`
+  - Email: `admin@smartshop.local`
+  - Password: `admin123` (hashed in the database)
+
+**How to apply the seed:**
+1. Ensure your connection string is set up in `appsettings.json`.
+2. Run the following command to create and apply migrations:
+```
+dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
+3. The database will be created and seeded automatically.
+ 
 
 ### 5️⃣ Run the API
 ```bash

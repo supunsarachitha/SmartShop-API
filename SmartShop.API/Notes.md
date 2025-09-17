@@ -1,5 +1,5 @@
 
 
 -- Update ef core
-Add-Migration TITLE
+Add-Migration InitialCreate2
 Update-Database
