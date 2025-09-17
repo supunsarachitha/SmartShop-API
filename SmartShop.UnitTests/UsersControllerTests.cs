@@ -144,7 +144,7 @@ namespace SmartShop.UnitTests
         public async Task DeleteUser_ReturnsBadRequest_WhenDeleteFails()
         {
             var userId = Guid.NewGuid();
-            var response = new ApplicationResponse<UserDto> { Success = false, Data = default!, StatusCode = StatusCodes.Status400BadRequest };
+            var response = new ApplicationResponse<UserDto> { Success = false, Data = null, StatusCode = StatusCodes.Status400BadRequest };
             _userServiceMock.Setup(s => s.DeleteUserAsync(userId)).ReturnsAsync(response);
 
             var result = await _controller.DeleteUser(userId);
