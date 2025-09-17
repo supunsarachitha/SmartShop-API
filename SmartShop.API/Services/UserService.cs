@@ -68,7 +68,7 @@ namespace SmartShop.API.Services
                         "Failed to create user because a user with the same UserName or Email already exists.",
                         "User",
                         "A user with the same UserName or Email already exists. Please use unique values.",
-                        StatusCodes.Status409Conflict);
+                        StatusCodes.Status400BadRequest);
                 }
 
                 user.CreatedDate = _dateTimeProvider.UtcNow;
