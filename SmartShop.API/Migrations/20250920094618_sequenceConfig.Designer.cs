@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace SmartShop.API.Migrations
 {
     [DbContext(typeof(SmartShopDbContext))]
-    partial class SmartShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250920094618_sequenceConfig")]
+    partial class sequenceConfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,19 +201,13 @@ namespace SmartShop.API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Length")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Prefix")
+                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Value")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
-                    b.ToTable("SequenceConfigs");
+                    b.ToTable("SystemConfigs");
                 });
 
             modelBuilder.Entity("SmartShop.API.Models.User", b =>

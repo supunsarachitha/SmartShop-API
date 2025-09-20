@@ -6,9 +6,7 @@ using SmartShop.API.Controllers;
 using SmartShop.API.Models;
 using SmartShop.API.Models.Responses;
 using SmartShop.API.Services;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace SmartShop.UnitTests
 {

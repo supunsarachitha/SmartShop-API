@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SmartShop.API.Common;
+using SmartShop.API.Helpers;
 using SmartShop.API.Interfaces;
 using SmartShop.API.Models;
 using SmartShop.API.Models.Responses;

@@ -1,4 +1,3 @@
-using Xunit;
 using Moq;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +5,6 @@ using SmartShop.API.Controllers;
 using SmartShop.API.Interfaces;
 using SmartShop.API.Models.Requests;
 using SmartShop.API.Models.Responses;
-using System;
-using System.Collections.Generic;
 using SmartShop.API.Models;
 
 namespace SmartShop.UnitTests

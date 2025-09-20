@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,7 +7,7 @@ using SmartShop.API.Controllers;
 using SmartShop.API.Interfaces;
 using SmartShop.API.Models;
 using SmartShop.API.Models.Responses;
-using Xunit;
+
 
 namespace SmartShop.UnitTests
 {
