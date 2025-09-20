@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartShop.API.Models;
-using SmartShop.API.Services.Interfaces;
+using SmartShop.API.Interfaces;
+using SmartShop.API.Models; 
 
-namespace SmartShop.API.Services
+namespace SmartShop.API.Services 
+{ 
     public class SequenceService : ISequenceService
     {
         private readonly SmartShopDbContext _context;
