@@ -6,7 +6,7 @@ namespace SmartShop.IntegrationTests
 {
     public class SequenceServiceTests
     {
-        private DbContext CreateContext() => TestDbContextFactory.CreateContext();
+        private SmartShopDbContext CreateContext() => TestDbContextFactory.CreateContext();
 
         [Fact]
         public async Task GetNextSequenceAsync_InitializesSequence_WhenNotFound()
