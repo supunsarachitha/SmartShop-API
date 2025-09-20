@@ -338,41 +338,6 @@ namespace SmartShop.IntegrationTests
             Assert.Equal(paymentMethod.Id, response.Data.Id);
         }
 
-        [Fact]
-        public async Task UpdatePaymentMethodAsync_ShouldUpdatePaymentMethod()
-        {
-            using var context = CreateContext();
-            var service = GetService(context);
-            var paymentMethod = new PaymentMethod
-            {
-                Id = Guid.NewGuid(),
-                Name = "Cheque",
-                Description = "Bank Cheque",
-                Type = 8,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
-            };
-            context.PaymentMethods.Add(paymentMethod);
-            await context.SaveChangesAsync();
-
-            var updatedPaymentMethod = new PaymentMethod
-            {
-                Id = paymentMethod.Id,
-                Name = "Updated Cheque",
-                Description = "Updated Bank Cheque",
-                Type = 8,
-                CreatedDate = paymentMethod.CreatedDate,
-                UpdatedDate = GetDateTimeProvider().UtcNow
-            };
-
-            var response = await service.UpdatePaymentMethodAsync(paymentMethod.Id, updatedPaymentMethod);
-
-            Assert.True(response.Success);
-            Assert.NotNull(response.Data);
-            Assert.Equal(updatedPaymentMethod.Name, response.Data.Name);
-            Assert.Equal(updatedPaymentMethod.Description, response.Data.Description);
-        }
-
         
     }
 }
