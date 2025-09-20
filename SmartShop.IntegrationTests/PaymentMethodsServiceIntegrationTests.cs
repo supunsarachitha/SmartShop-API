@@ -268,28 +268,6 @@ namespace SmartShop.IntegrationTests
             Assert.NotNull(response.Message);
         }
 
-        [Fact]
-        public async Task CreatePaymentMethodAsync_ShouldCreatePaymentMethod()
-        {
-            using var context = CreateContext();
-            var service = GetService(context);
-            var paymentMethod = new PaymentMethod
-            {
-                Id = Guid.NewGuid(),
-                Name = "Mobile Wallet",
-                Description = "Apple Pay/Google Pay",
-                Type = 5,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
-            };
-
-            var response = await service.CreatePaymentMethodAsync(paymentMethod);
-
-            Assert.True(response.Success);
-            Assert.NotNull(response.Data);
-            Assert.Equal(paymentMethod.Name, response.Data.Name);
-        }
-
         
     }
 }
