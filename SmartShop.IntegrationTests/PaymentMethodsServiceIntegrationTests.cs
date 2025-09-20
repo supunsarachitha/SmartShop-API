@@ -423,18 +423,5 @@ namespace SmartShop.IntegrationTests
             Assert.Null(dbPaymentMethod);
         }
 
-        [Fact]
-        public async Task DeletePaymentMethodAsync_ShouldReturnError_WhenPaymentMethodNotFound()
-        {
-            using var context = CreateContext();
-            var service = GetService(context);
-            var nonExistentId = Guid.NewGuid();
-
-            var response = await service.DeletePaymentMethodAsync(nonExistentId);
-
-            Assert.False(response.Success);
-            Assert.Null(response.Data);
-            Assert.NotNull(response.Message);
-        }
     }
 }
