@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.API", "SmartShop.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.UnitTests", "SmartShop.UnitTests\SmartShop.UnitTests.csproj", "{337FCF4D-A190-40A7-A5B0-D2E887C6F1F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartShop.IntegrationTests", "SmartShop.IntegrationTests\SmartShop.IntegrationTests.csproj", "{CE3F3BE7-A4BB-4AD9-89C4-56A3FB5BAFA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{337FCF4D-A190-40A7-A5B0-D2E887C6F1F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{337FCF4D-A190-40A7-A5B0-D2E887C6F1F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{337FCF4D-A190-40A7-A5B0-D2E887C6F1F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE3F3BE7-A4BB-4AD9-89C4-56A3FB5BAFA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE3F3BE7-A4BB-4AD9-89C4-56A3FB5BAFA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE3F3BE7-A4BB-4AD9-89C4-56A3FB5BAFA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE3F3BE7-A4BB-4AD9-89C4-56A3FB5BAFA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

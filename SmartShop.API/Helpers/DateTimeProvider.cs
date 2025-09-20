@@ -1,6 +1,6 @@
 using SmartShop.API.Interfaces;
 
-namespace SmartShop.API.Common
+namespace SmartShop.API.Helpers
 {
     public class DateTimeProvider : IDateTimeProvider
     {

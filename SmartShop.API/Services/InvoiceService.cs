@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartShop.API.Common;
+using SmartShop.API.Helpers;
 using SmartShop.API.Interfaces;
 using SmartShop.API.Models;
 using SmartShop.API.Models.Responses;
@@ -10,11 +10,14 @@ namespace SmartShop.API.Services
     {
         private readonly SmartShopDbContext _context;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly ISequenceService _sequenceService;
 
-        public InvoiceService(SmartShopDbContext context, IDateTimeProvider dateTimeProvider)
+
+        public InvoiceService(SmartShopDbContext context, IDateTimeProvider dateTimeProvider, ISequenceService sequenceService)
         {
             _context = context;
             _dateTimeProvider = dateTimeProvider;
+            _sequenceService = sequenceService;
         }
 
         public async Task<ApplicationResponse<Invoice>> CreateInvoiceAsync(Invoice invoice)
@@ -33,7 +36,7 @@ namespace SmartShop.API.Services
 
                 invoice.Id = Guid.NewGuid();
                 invoice.InvoiceDate = _dateTimeProvider.UtcNow;
-                invoice.InvoiceNumber = $"INV-{_dateTimeProvider.UtcNow:yyyyMMddHHmmss}-{invoice.Id.ToString().Substring(0, 8)}";
+                invoice.InvoiceNumber = await _sequenceService.GetNextSequenceAsync(Common.InvoiceKey, true);
 
                 var productIds = invoice.Items.Select(i => i.ProductId).Distinct().ToList();
                 var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();

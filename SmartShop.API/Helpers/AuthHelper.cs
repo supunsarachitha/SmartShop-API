@@ -1,4 +1,4 @@
-﻿namespace SmartShop.API.Common
+﻿namespace SmartShop.API.Helpers
 {
     public static class AuthHelper
     {
