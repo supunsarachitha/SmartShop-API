@@ -72,8 +72,15 @@ cd SmartShop-API
 Create an `appsettings.json` file in `SmartShop.API/` with your database connection string:
 ```json
 {
-  "ConnectionStrings": {
+  "ConnectionStrings":
+  {
     "DefaultConnection": "Server=localhost;Database=SmartShop;User Id=youruser;Password=yourpassword;"
+  },
+  "Jwt":
+  {
+    "Key": "your-256-bit-secret-key-should-be-at-least-32-characters-long",
+    "Issuer": "SmartShopIssuer",
+    "Audience": "SmartShopAudience"
   }
 }
 ```
