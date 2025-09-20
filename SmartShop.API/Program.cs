@@ -25,7 +25,7 @@ builder.Services.AddScoped<IPaymentMethods, PaymentMethodsService>();
 builder.Services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>(); 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<SequenceService>();
+builder.Services.AddScoped<ISequenceService, SequenceService>();
 
 
 builder.Services.AddControllers();
