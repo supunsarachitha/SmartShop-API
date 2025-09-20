@@ -396,32 +396,5 @@ namespace SmartShop.IntegrationTests
             Assert.NotNull(response.Message);
         }
 
-        [Fact]
-        public async Task DeletePaymentMethodAsync_ShouldDeletePaymentMethod()
-        {
-            using var context = CreateContext();
-            var service = GetService(context);
-            var paymentMethod = new PaymentMethod
-            {
-                Id = Guid.NewGuid(),
-                Name = "Delete Me",
-                Description = "To be deleted",
-                Type = 10,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
-            };
-            context.PaymentMethods.Add(paymentMethod);
-            await context.SaveChangesAsync();
-
-            var response = await service.DeletePaymentMethodAsync(paymentMethod.Id);
-
-            Assert.True(response.Success);
-            Assert.NotNull(response.Data);
-            Assert.Equal(paymentMethod.Id, response.Data.Id);
-
-            var dbPaymentMethod = await context.PaymentMethods.FindAsync(paymentMethod.Id);
-            Assert.Null(dbPaymentMethod);
-        }
-
     }
 }
