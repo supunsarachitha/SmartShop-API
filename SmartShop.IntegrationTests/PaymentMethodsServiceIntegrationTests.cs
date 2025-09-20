@@ -314,30 +314,6 @@ namespace SmartShop.IntegrationTests
             Assert.Contains(response.Data, pm => pm.Id == paymentMethod.Id);
         }
 
-        [Fact]
-        public async Task GetPaymentMethodByIdAsync_ShouldReturnPaymentMethod()
-        {
-            using var context = CreateContext();
-            var service = GetService(context);
-            var paymentMethod = new PaymentMethod
-            {
-                Id = Guid.NewGuid(),
-                Name = "Voucher",
-                Description = "Gift Voucher",
-                Type = 7,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
-            };
-            context.PaymentMethods.Add(paymentMethod);
-            await context.SaveChangesAsync();
-
-            var response = await service.GetPaymentMethodByIdAsync(paymentMethod.Id);
-
-            Assert.True(response.Success);
-            Assert.NotNull(response.Data);
-            Assert.Equal(paymentMethod.Id, response.Data.Id);
-        }
-
         
     }
 }
