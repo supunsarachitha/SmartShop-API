@@ -43,7 +43,6 @@ namespace SmartShop.API.Services
                     // increment
                     nextNumber = config.Value + 1;
                     config.Value = nextNumber;
-                    _context.Update(config);
                 }
                 else
                 {
