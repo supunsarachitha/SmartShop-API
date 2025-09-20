@@ -17,48 +17,43 @@ namespace SmartShop.API.Services
 
         public string GenerateJwtToken(string username)
         {
-            try
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentNullException(nameof(username), "Username must not be null, empty, or whitespace.");
+
+            var keyString = _configuration["Jwt:Key"];
+            if (string.IsNullOrWhiteSpace(keyString))
+                throw new InvalidOperationException("JWT key is missing from configuration.");
+
+            var keyBytes = Encoding.UTF8.GetBytes(keyString);
+            if (keyBytes.Length < 32)
+                throw new InvalidOperationException("JWT key must be at least 256 bits (32 bytes) long.");
+
+            var claims = new[]
             {
-                var keyString = _configuration["Jwt:Key"];
-                if (string.IsNullOrWhiteSpace(keyString))
-                    throw new ArgumentException("JWT key is missing from configuration.");
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
-                var keyBytes = Encoding.UTF8.GetBytes(keyString);
-                if (keyBytes.Length < 32)
-                    throw new ArgumentOutOfRangeException("Jwt:Key", "JWT key must be at least 256 bits (32 bytes) long.");
+            var key = new SymmetricSecurityKey(keyBytes);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-                var claims = new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, username),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                };
+            var issuer = _configuration["Jwt:Issuer"];
+            var audience = _configuration["Jwt:Audience"];
 
-                var key = new SymmetricSecurityKey(keyBytes);
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            if (string.IsNullOrWhiteSpace(issuer))
+                throw new InvalidOperationException("JWT issuer is missing from configuration.");
+            if (string.IsNullOrWhiteSpace(audience))
+                throw new InvalidOperationException("JWT audience is missing from configuration.");
 
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["Jwt:Issuer"],
-                    audience: _configuration["Jwt:Audience"],
-                    claims: claims,
-                    expires: DateTime.Now.AddMinutes(30),
-                    signingCredentials: creds
-                );
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(30),
+                signingCredentials: creds
+            );
 
-                return new JwtSecurityTokenHandler().WriteToken(token);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                throw new InvalidOperationException("JWT generation failed due to insufficient key length.", ex);
-            }
-            catch (ArgumentException ex)
-            {
-                // Log and rethrow or return a meaningful error
-                throw new InvalidOperationException("JWT generation failed due to missing configuration.", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException("An unexpected error occurred during JWT generation.", ex);
-            }
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 
