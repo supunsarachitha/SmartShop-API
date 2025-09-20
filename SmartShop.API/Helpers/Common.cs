@@ -1,5 +1,4 @@
-﻿using SmartShop.API.Models;
-
+﻿
 namespace SmartShop.API.Helpers
 {
     public static class Common
