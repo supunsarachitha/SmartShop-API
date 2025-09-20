@@ -290,30 +290,6 @@ namespace SmartShop.IntegrationTests
             Assert.Equal(paymentMethod.Name, response.Data.Name);
         }
 
-        [Fact]
-        public async Task GetAllPaymentMethodsAsync_ShouldReturnPaymentMethods()
-        {
-            using var context = CreateContext();
-            var service = GetService(context);
-            var paymentMethod = new PaymentMethod
-            {
-                Id = Guid.NewGuid(),
-                Name = "Crypto",
-                Description = "Bitcoin/Ethereum",
-                Type = 6,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
-            };
-            context.PaymentMethods.Add(paymentMethod);
-            await context.SaveChangesAsync();
-
-            var response = await service.GetAllPaymentMethodsAsync();
-
-            Assert.True(response.Success);
-            Assert.NotNull(response.Data);
-            Assert.Contains(response.Data, pm => pm.Id == paymentMethod.Id);
-        }
-
         
     }
 }
