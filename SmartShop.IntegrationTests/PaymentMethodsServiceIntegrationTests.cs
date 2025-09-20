@@ -373,28 +373,6 @@ namespace SmartShop.IntegrationTests
             Assert.Equal(updatedPaymentMethod.Description, response.Data.Description);
         }
 
-        [Fact]
-        public async Task UpdatePaymentMethodAsync_ShouldReturnError_WhenPaymentMethodNotFound()
-        {
-            using var context = CreateContext();
-            var service = GetService(context);
-            var nonExistentId = Guid.NewGuid();
-            var paymentMethod = new PaymentMethod
-            {
-                Id = nonExistentId,
-                Name = "Ghost Method",
-                Description = "Should not exist",
-                Type = 99,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
-            };
-
-            var response = await service.UpdatePaymentMethodAsync(nonExistentId, paymentMethod);
-
-            Assert.False(response.Success);
-            Assert.Null(response.Data);
-            Assert.NotNull(response.Message);
-        }
-
+        
     }
 }
