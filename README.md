@@ -7,30 +7,33 @@
 ![Last Commit](https://img.shields.io/github/last-commit/supunsarachitha/SmartShop-API)
 ![Top Language](https://img.shields.io/github/languages/top/supunsarachitha/SmartShop-API)
 
-SmartShop API is a **.NET-based backend service** designed to power e-commerce applications.  
-It provides endpoints for managing products, categories, customers, and orders, enabling developers to build scalable and maintainable online store solutions.
+SmartShop API is a **.NET-based backend service** designed to power e-commerce applications. It provides endpoints for managing products, categories, customers, and orders, enabling developers to build scalable and maintainable online store solutions.
 
 ---
 
 ## 📌 Features
 
-- **Product Management** – Create, update, delete, and list products.
-- **Category Management** – Organize products into categories.
-- **Customer Management** – Handle customer profiles and authentication.
-- **Order Processing** – Manage shopping carts, checkout, and order history.
-- **RESTful API** – Clean and predictable endpoints.
-- **Entity Models** – Strongly typed C# model classes for application data.
-- **Extensible Architecture** – Easy to integrate with payment gateways, inventory systems, and analytics.
-
+- **Product Management** – Create, update, delete, and list products via secure endpoints.
+- **Category Management** – Organize and manage products by categories.
+- **Customer Management** – Handle customer profiles, registration, and authentication.
+- **User Management** – Full CRUD operations for user accounts with role support.
+- **Order & Invoice Processing** – Manage shopping carts, checkout, orders, and generate invoices.
+- **Payment Method Management** – Add, update, view, and delete payment methods.
+- **Authentication** – Secure JWT-based login endpoint.
+- **Health Check Endpoint** – API status and health monitoring.
+- **RESTful API** – Clean, predictable endpoints using standard HTTP conventions.
+- **Entity Models** – Strongly typed C# classes for application data.
+- **Extensible Architecture** – Easily integrates with payment gateways, inventory, and analytics systems.
 ---
 
 ## 🛠️ Tech Stack
 
-- **Language:** C#  
-- **Framework:** .NET 6+  
-- **Database:** (e.g. PostgreSQL — update as applicable)  
-- **ORM:** Entity Framework Core  
-- **Authentication:** JWT-based authentication (if implemented)  
+- **Language:** C#
+- **Framework:** .NET (latest version .NET 8+ )
+- **Database:** PostgreSQL
+- **ORM:** Entity Framework Core
+- **Authentication:** JWT-based authentication
+- **API Style:** RESTful endpoints
 - **Hosting:** Compatible with Azure, AWS, or on-premise deployment
 
 ---
@@ -46,6 +49,9 @@ SmartShop-API/
 │   ├── Services/            # Business logic
 │   ├── Data/                # Database context and migrations
 │   └── Program.cs           # Application entry point
+│
+├── SmartShop.API.UnitTests/     # Unit test project
+├── SmartShop.API.IntegrationTests/  # Integration test project
 │
 ├── .github/workflows/       # CI/CD pipelines
 ├── SmartShop.API.sln        # Solution file
@@ -134,13 +140,17 @@ Run unit tests with:
 ```bash
 dotnet test
 ```
-- [Unit Test Guide](UNIT_TEST.md)
+This solution includes unit and integration test projects to ensure SmartShop-API’s reliability. These test projects help maintain high code quality and a stable API.
+
+**Unit tests** check individual components in isolation, using mocks to simulate dependencies and provide quick feedback during development.
+
+**Integration tests** verify that different modules and services work together correctly, catching issues that unit tests may miss.
 
 ---
 
 ## 📜 License
 
-This project is licensed under the [MIT License](LICENSE.txt).
+This project is licensed under the [Apache License 2.0](LICENSE.txt).
 
 ---
 
