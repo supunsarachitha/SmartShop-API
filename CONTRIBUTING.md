@@ -1,4 +1,3 @@
-
 # 🤝 Contributing to SmartShop-API
 
 Welcome! We're excited that you're interested in contributing to **SmartShop-API**, a .NET-based backend for scalable e-commerce applications. Whether you're fixing bugs, improving documentation, or adding new features, your input is highly valued.
@@ -7,7 +6,7 @@ Welcome! We're excited that you're interested in contributing to **SmartShop-API
 
 Before contributing, make sure you have:
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- [.NET SDK (latest version)](https://dotnet.microsoft.com/download)
 - A running PostgreSQL instance
 - Git installed
 
@@ -44,7 +43,7 @@ Create your `appsettings.json` in `SmartShop.API/` with your DB connection strin
 
 ## 🧪 Testing
 
-We use `xUnit` for unit testing. Please include tests for any new features or bug fixes.
+We use `xUnit` for unit testing. Please include unit tests and integration tests for any new features or bug fixes.
 
 ## 🛡️ Security
 
