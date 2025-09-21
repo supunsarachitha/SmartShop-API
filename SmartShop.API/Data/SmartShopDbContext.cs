@@ -17,6 +17,7 @@ public class SmartShopDbContext : DbContext
     public DbSet<User> Users { get; set; } = default!;
     public DbSet<UserRole> UserRoles { get; set; } = default!;
     public DbSet<SequenceConfig> SequenceConfigs { get; set; }
+    public DbSet<Setting> Settings { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
