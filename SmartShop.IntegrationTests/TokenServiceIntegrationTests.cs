@@ -9,13 +9,27 @@ namespace SmartShop.IntegrationTests
 {
     public class TokenServiceIntegrationTests
     {
+        private static IConfiguration? _configuration;
+
+        private static IConfiguration GetConfiguration()
+        {
+            if (_configuration == null)
+            {
+                _configuration = new ConfigurationBuilder()
+                    .AddInMemoryCollection(new[]
+                    {
+                        new KeyValuePair<string, string?>("Jwt:Key", "your-256-bit-secret-key-should-be-at-least-32-characters-long"),
+                        new KeyValuePair<string, string?>("Jwt:Issuer", "your-test-issuer"),
+                        new KeyValuePair<string, string?>("Jwt:Audience", "your-test-audience")
+                    })
+                    .Build();
+            }
+            return _configuration;
+        }
+
         private TokenService CreateService()
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-            return new TokenService(configuration);
+            return new TokenService(GetConfiguration());
         }
 
         [Fact]
@@ -79,10 +93,7 @@ namespace SmartShop.IntegrationTests
             try
             {
                 // Get key from appsettings.json via configuration
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(AppContext.BaseDirectory)
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .Build();
+                var configuration = GetConfiguration();
                 var keyString = configuration["Jwt:Key"];
                 if (string.IsNullOrEmpty(keyString))
                     throw new InvalidOperationException("JWT key not found in appsettings.json.");
