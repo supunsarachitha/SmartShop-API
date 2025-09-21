@@ -17,15 +17,11 @@ namespace SmartShop.IntegrationTests
         
         private SmartShopDbContext CreateContext() => TestDbContextFactory.CreateContext();
           
-        DateTimeProvider GetDateTimeProvider()
-        {
-            // Use the actual DateTimeProvider implementation from SmartShop.API.Helpers
-            return new DateTimeProvider();
-        }
+        private readonly DateTimeProvider _dateTimeProvider = new DateTimeProvider();
 
         private ProductService GetService(SmartShopDbContext context)
         {
-            return new ProductService(context, GetDateTimeProvider());
+            return new ProductService(context, _dateTimeProvider);
         }
 
         [Fact]
