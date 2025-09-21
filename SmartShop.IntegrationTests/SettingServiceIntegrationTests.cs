@@ -13,7 +13,7 @@ namespace SmartShop.IntegrationTests
     {
         private SmartShopDbContext CreateContext() => TestDbContextFactory.CreateContext();
 
-        DateTimeProvider GetDateTimeProvider()
+        private DateTimeProvider GetDateTimeProvider()
         {
             return new DateTimeProvider();
         }
