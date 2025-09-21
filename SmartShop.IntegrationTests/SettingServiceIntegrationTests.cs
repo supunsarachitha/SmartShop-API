@@ -11,16 +11,13 @@ namespace SmartShop.IntegrationTests
 {
     public class SettingServiceIntegrationTests
     {
+        private readonly DateTimeProvider _dateTimeProvider = new DateTimeProvider();
+
         private SmartShopDbContext CreateContext() => TestDbContextFactory.CreateContext();
 
-        DateTimeProvider GetDateTimeProvider()
-        {
-            return new DateTimeProvider();
-        }
-                
         private SettingsService GetService(SmartShopDbContext context)
         {
-            return new SettingsService(context, GetDateTimeProvider());
+            return new SettingsService(context, _dateTimeProvider);
         }
 
         [Fact]
@@ -34,7 +31,7 @@ namespace SmartShop.IntegrationTests
                 Key = "TestKey",
                 Value = "TestValue",
                 Description = "Test Description",
-                CreatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow
             };
 
             var response = await service.CreateSettingAsync(setting);
@@ -55,7 +52,7 @@ namespace SmartShop.IntegrationTests
                 Key = "AllKey",
                 Value = "AllValue",
                 Description = "All Description",
-                CreatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow
             };
             context.Settings.Add(setting);
             await context.SaveChangesAsync();
@@ -78,7 +75,7 @@ namespace SmartShop.IntegrationTests
                 Key = "ByIdKey",
                 Value = "ByIdValue",
                 Description = "ById Description",
-                CreatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow
             };
             context.Settings.Add(setting);
             await context.SaveChangesAsync();
@@ -101,7 +98,7 @@ namespace SmartShop.IntegrationTests
                 Key = "UpdateKey",
                 Value = "UpdateValue",
                 Description = "Update Description",
-                CreatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow
             };
             context.Settings.Add(setting);
             await context.SaveChangesAsync();
@@ -112,7 +109,7 @@ namespace SmartShop.IntegrationTests
                 Key = "UpdatedKey",
                 Value = "UpdatedValue",
                 Description = "Updated Description",
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             var response = await service.UpdateSettingAsync(setting.Id, updatedSetting);
@@ -133,7 +130,7 @@ namespace SmartShop.IntegrationTests
                 Key = "DeleteKey",
                 Value = "DeleteValue",
                 Description = "Delete Description",
-                CreatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow
             };
             context.Settings.Add(setting);
             await context.SaveChangesAsync();

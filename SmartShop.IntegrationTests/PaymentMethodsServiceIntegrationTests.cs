@@ -13,14 +13,11 @@ namespace SmartShop.IntegrationTests
     {
         private SmartShopDbContext CreateContext() => TestDbContextFactory.CreateContext();
 
-        DateTimeProvider GetDateTimeProvider()
-        {
-            return new DateTimeProvider();
-        }
+        private readonly DateTimeProvider _dateTimeProvider = new DateTimeProvider();
 
         private PaymentMethodsService GetService(SmartShopDbContext context)
         {
-            return new PaymentMethodsService(context, GetDateTimeProvider());
+            return new PaymentMethodsService(context, _dateTimeProvider);
         }
 
         [Fact]
@@ -35,8 +32,8 @@ namespace SmartShop.IntegrationTests
                 Name = "Credit Card",
                 Description = "Visa/Mastercard",
                 Type = 1,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             var response = await service.CreatePaymentMethodAsync(paymentMethod);
@@ -58,8 +55,8 @@ namespace SmartShop.IntegrationTests
                 Name = "PayPal",
                 Description = "Online Payment",
                 Type = 2,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             context.PaymentMethods.Add(paymentMethod);
@@ -84,8 +81,8 @@ namespace SmartShop.IntegrationTests
                 Name = "Bank Transfer",
                 Description = "Wire Transfer",
                 Type = 3,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             context.PaymentMethods.Add(paymentMethod);
@@ -111,8 +108,8 @@ namespace SmartShop.IntegrationTests
                 Name = "Cash",
                 Description = "Physical Money",
                 Type = 4,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             context.PaymentMethods.Add(paymentMethod);
@@ -138,8 +135,8 @@ namespace SmartShop.IntegrationTests
                 Name = "Method1",
                 Description = "Desc1",
                 Type = 1,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             });
             context.PaymentMethods.Add(new PaymentMethod
             {
@@ -147,8 +144,8 @@ namespace SmartShop.IntegrationTests
                 Name = "Method2",
                 Description = "Desc2",
                 Type = 2,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             });
             await context.SaveChangesAsync();
 
@@ -186,8 +183,8 @@ namespace SmartShop.IntegrationTests
                 Name = "NonExistent",
                 Description = "Should not exist",
                 Type = 99,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             var response = await service.UpdatePaymentMethodAsync(nonExistentId, paymentMethod);
@@ -224,8 +221,8 @@ namespace SmartShop.IntegrationTests
                 Name = "UniqueMethod",
                 Description = "First",
                 Type = 1,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
             var paymentMethod2 = new PaymentMethod
             {
@@ -233,8 +230,8 @@ namespace SmartShop.IntegrationTests
                 Name = "DuplicateMethod",
                 Description = "Second",
                 Type = 2,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             var response1 = await service.CreatePaymentMethodAsync(paymentMethod1);
@@ -257,8 +254,8 @@ namespace SmartShop.IntegrationTests
                 Name = null,
                 Description = "No name",
                 Type = 1,
-                CreatedDate = GetDateTimeProvider().UtcNow,
-                UpdatedDate = GetDateTimeProvider().UtcNow
+                CreatedDate = _dateTimeProvider.UtcNow,
+                UpdatedDate = _dateTimeProvider.UtcNow
             };
 
             var response = await service.CreatePaymentMethodAsync(paymentMethod);
