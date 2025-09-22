@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartShop API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="SmartShop API is a modern .NET backend for e-commerce with clean RESTful endpoints to manage products, categories, customers, and orders.">
+    <link rel="canonical" href="https://github.com/supunsarachitha/SmartShop-API">
+    <meta property="og:title" content="SmartShop API">
+    <meta property="og:description" content="Modern .NET backend for e-commerce with clean RESTful endpoints.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/supunsarachitha/SmartShop-API">
+    <meta property="og:image" content="https://opengraph.githubassets.com/1/supunsarachitha/SmartShop-API">
+    <meta name="color-scheme" content="light dark">
+    <link rel="icon" href="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png">
+    <style>
+        :root {
+            --bg: #fafbfc;
+            --surface: #ffffff;
+            --text: #222;
+            --muted: #5a6b7b;
+            --primary: #2980b9;
+            --primary-contrast: #ffffff;
+            --accent: #ffeb3b;
+            --hero-start: #2d3e50;
+            --hero-end: #2980b9;
+            --ring: rgba(41,128,185,0.35);
+            --border: #e5e9f0;
+            --surface-alt: #f4f7fb;
+            --code-bg: #24292e;
+            --code-fg: #f6f8fa;
+            --shadow: 0 2px 14px rgba(44,62,80,0.10);
+        }
+        [data-theme="dark"] {
+            --bg: #0e1116;
+            --surface: #0f1724;
+            --surface-alt: #0b1420;
+            --text: #ebf0f7;
+            --muted: #b4c0ce;
+            --primary: #52a9ff;
+            --primary-contrast: #0b0e14;
+            --accent: #ffd659;
+            --hero-start: #0f1724;
+            --hero-end: #1c2b40;
+            --ring: rgba(82,169,255,0.45);
+            --border: #1e293b;
+            --code-bg: #0b1220;
+            --code-fg: #e5eefb;
+            --shadow: 0 2px 16px rgba(0,0,0,0.35);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        .skip-link {
+            position: absolute; left: -999px; top: auto; width: 1px; height: 1px; overflow: hidden;
+        }
+        .skip-link:focus {
+            position: fixed; left: 1rem; top: 1rem; width: auto; height: auto; padding: .6rem 1rem; background: var(--accent); color: #000; border-radius: 6px; z-index: 10000;
+        }
+        nav {
+            background: linear-gradient(90deg, var(--hero-start) 60%, var(--hero-end) 100%);
+            color: #fff;
+            padding: .6rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+        .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 1rem; }
+        .brand { font-weight: 700; letter-spacing: .5px; }
+        .spacer { flex: 1; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .nav-links a { color: #fff; text-decoration: none; padding: .4rem .6rem; border-radius: 6px; opacity: .95; }
+        .nav-links a.active, .nav-links a:hover { background: rgba(255,255,255,0.12); }
+        .icon-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.22);
+            background: transparent; color: #fff; cursor: pointer;
+        }
+        .menu-btn { display: none; }
+        header {
+            background: linear-gradient(90deg, var(--hero-start) 60%, var(--hero-end) 100%);
+            color: #fff; padding: 2.4rem 1.2rem 1.6rem; text-align: center;
+        }
+        .hero { margin: 0 auto; max-width: 1000px; }
+        .hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 .6rem; letter-spacing: 1px; }
+        .hero p { font-size: clamp(1.05rem, 2.2vw, 1.35rem); margin: 0 0 1.2rem; color: #eef4fb; }
+        .cta-row { display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .7rem 1rem; border-radius: 8px; border: 1px solid transparent; cursor: pointer; text-decoration: none; font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+        .btn-primary { background: var(--accent); color: #111; }
+        .btn-ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.35); }
+        main { max-width: 1000px; margin: 2rem auto; padding: 1.2rem; background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); }
+        h2 { color: var(--primary); margin-top: 2rem; }
+        section { margin-bottom: 2rem; }
+        .card { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; }
+        .feature { background: var(--surface-alt); border: 1px solid var(--border); padding: 1rem; border-radius: 10px; }
+        .feature .icon { font-size: 1.5rem; display: inline-block; margin-bottom: .4rem; }
+        .meta { color: var(--muted); }
+        .stack { display: flex; flex-wrap: wrap; gap: .6rem; }
+        .pill { background: color-mix(in srgb, var(--primary) 12%, transparent); color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 35%, transparent); padding: .35rem .6rem; border-radius: 999px; font-weight: 600; }
+        code, pre { background: var(--code-bg); color: var(--code-fg); }
+        pre { padding: 1rem; border-radius: 10px; overflow-x: auto; position: relative; border: 1px solid var(--border); }
+        .copy-btn {
+            position: absolute; top: .6rem; right: .6rem; background: rgba(255,255,255,0.12);
+            color: var(--code-fg); border: 1px solid rgba(255,255,255,0.25);
+            padding: .25rem .5rem; border-radius: 6px; cursor: pointer; font-size: .85rem;
+        }
+        table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+        th, td { padding: .7rem .6rem; border-bottom: 1px solid var(--border); text-align: left; }
+        th { background: var(--surface-alt); }
+        .table-tools { display: flex; gap: .6rem; align-items: center; margin: .6rem 0; }
+        .input { padding: .5rem .6rem; border: 1px solid var(--border); background: var(--surface-alt); color: var(--text); border-radius: 8px; outline: none; }
+        .input:focus { box-shadow: 0 0 0 4px var(--ring); border-color: var(--primary); }
+        details.faq { background: var(--surface-alt); padding: .6rem .8rem; border-radius: 10px; border: 1px solid var(--border); }
+        details.faq + details.faq { margin-top: .6rem; }
+        summary { cursor: pointer; font-weight: 700; color: var(--primary); }
+        .integrations, .badges { display: flex; flex-wrap: wrap; gap: .6rem; }
+        .badge { background: #d1c4e9; color:#2c186a; border-radius: 999px; padding: .25rem .7rem; font-weight: 700; border: 1px solid #b39ddb; }
+        .notice { border-left: 4px solid var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); padding: .8rem 1rem; border-radius: 8px; }
+        .github-link { margin-top: 1.2rem; text-align: right; }
+        .github-link a { color: var(--primary); text-decoration: none; font-weight: 700; }
+        .back-to-top {
+            position: fixed; right: 1rem; bottom: 1rem; z-index: 999;
+            display: none; padding: .55rem .7rem; border-radius: 50%; border: 1px solid var(--border);
+            background: var(--surface); color: var(--text); box-shadow: var(--shadow);
+        }
+        .sponsor-logos img { height: 28px; margin-right: .6rem; filter: saturate(0.9); opacity: .95; }
+        footer { text-align: center; color: var(--muted); padding: 1.2rem 0 1.6rem; }
+        .footer-links a { color: var(--primary); text-decoration: none; margin: 0 .35rem; }
+        /* Mobile nav */
+        @media (max-width: 900px) {
+            .menu-btn { display: inline-flex; }
+            .nav-links { display: none; position: absolute; left: 0; right: 0; top: 100%; background: linear-gradient(90deg, var(--hero-start) 60%, var(--hero-end) 100%); padding: .6rem 1rem; }
+            .nav-links.open { display: flex; flex-direction: column; gap: .2rem; }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <nav role="navigation" aria-label="Main">
+        <div class="nav-inner">
+            <div class="brand" aria-label="Project name">SmartShop API</div>
+            <button id="menuToggle" class="icon-btn menu-btn" aria-label="Toggle menu" aria-expanded="false">☰</button>
+            <div class="spacer"></div>
+            <div class="nav-links" id="navLinks">
+                <a href="#why">Why</a>
+                <a href="#quickstart">Quick Start</a>
+                <a href="#demo">Demo</a>
+                <a href="#features">Features</a>
+                <a href="#api-docs">API</a>
+                <a href="#stack">Stack</a>
+                <a href="#community">Community</a>
+                <a href="#changelog">Changelog</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Contact</a>
+                <button id="themeToggle" class="icon-btn" aria-label="Toggle dark mode" title="Toggle theme">🌓</button>
+            </div>
+        </div>
+    </nav>
+    <header role="banner">
+        <div class="hero">
+            <h1>SmartShop API</h1>
+            <p>Your scalable, secure .NET backend for modern e-commerce. Clean RESTful endpoints. Easy integration. Robust architecture.</p>
+            <div class="cta-row" role="group" aria-label="Primary actions">
+                <a class="btn btn-primary" href="https://github.com/supunsarachitha/SmartShop-API" target="_blank" rel="noopener">Get Started on GitHub</a>
+                <a class="btn btn-ghost" href="#api-docs">Explore API</a>
+                <a class="btn btn-ghost" href="#quickstart">Run Locally</a>
+            </div>
+        </div>
+    </header>
+    <main id="main" role="main">
+        <section id="why" class="card">
+            <h2>Why SmartShop API?</h2>
+            <ul>
+                <li>Rapid setup for new e-commerce projects</li>
+                <li>Modular and extensible architecture</li>
+                <li>Well-documented REST endpoints</li>
+                <li>Security-first best practices</li>
+                <li>Docker-ready for cloud or local deployment</li>
+            </ul>
+        </section>
+
+        <section id="quickstart" class="card">
+            <h2>Quick Start</h2>
+            <ol>
+                <li><strong>Clone:</strong> <code>git clone https://github.com/supunsarachitha/SmartShop-API.git</code></li>
+                <li><strong>Restore:</strong> <code>dotnet restore</code></li>
+                <li><strong>Run:</strong> <code>dotnet run</code></li>
+                <li><strong>Test:</strong> Visit <code>https://localhost:5001/api/products</code></li>
+            </ol>
+            <p class="meta">See the <a href="https://github.com/supunsarachitha/SmartShop-API/blob/main/README.md" target="_blank" rel="noopener">README</a> for full setup and environment configuration.</p>
+            <div class="notice" role="note">
+                If you use Swashbuckle/OpenAPI, your docs may be available at <code>/swagger</code> (e.g., <code>https://localhost:5001/swagger</code>).
+            </div>
+        </section>
+
+        <section id="demo" class="card">
+            <h2>Demo: Try the API</h2>
+            <p>Fetch products with cURL:</p>
+            <pre><code>curl -X GET https://localhost:5001/api/products</code></pre>
+            <p>Create a new product:</p>
+            <pre><code>curl -X POST https://localhost:5001/api/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Bluetooth Headphones","price":49.99,"category":"Audio"}'</code></pre>
+        </section>
+
+        <section id="features">
+            <h2>Features</h2>
+            <div class="features">
+                <div class="feature" role="article">
+                    <div class="icon" aria-hidden="true">🛒</div>
+                    <h3>Products & Categories</h3>
+                    <p>Full CRUD for products and categories to power your catalog.</p>
+                </div>
+                <div class="feature" role="article">
+                    <div class="icon" aria-hidden="true">👥</div>
+                    <h3>Customers</h3>
+                    <p>Customer profiles, registration, and authentication support.</p>
+                </div>
+                <div class="feature" role="article">
+                    <div class="icon" aria-hidden="true">📦</div>
+                    <h3>Orders</h3>
+                    <p>Create, update, and track orders with solid, extensible models.</p>
+                </div>
+                <div class="feature" role="article">
+                    <div class="icon" aria-hidden="true">⚡</div>
+                    <h3>Performance</h3>
+                    <p>Built on .NET for high throughput and low latency APIs.</p>
+                </div>
+                <div class="feature" role="article">
+                    <div class="icon" aria-hidden="true">🔒</div>
+                    <h3>Security</h3>
+                    <p>Secure defaults and best practices to protect your data.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="api-docs" class="card">
+            <h2>API Documentation</h2>
+            <div class="table-tools" role="search">
+                <input id="apiFilter" class="input" placeholder="Filter endpoints (e.g., products GET)" aria-label="Filter API endpoints">
+            </div>
+            <table aria-label="API endpoints">
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                        <th>Parameters</th>
+                    </tr>
+                </thead>
+                <tbody id="apiTableBody">
+                    <tr>
+                        <td>/api/products</td>
+                        <td>GET</td>
+                        <td>List all products</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td>/api/products</td>
+                        <td>POST</td>
+                        <td>Create a new product</td>
+                        <td>name, price, category</td>
+                    </tr>
+                    <tr>
+                        <td>/api/orders</td>
+                        <td>POST</td>
+                        <td>Create a new order</td>
+                        <td>customerId, items[]</td>
+                    </tr>
+                    <tr>
+                        <td>/api/customers</td>
+                        <td>GET</td>
+                        <td>List all customers</td>
+                        <td>None</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Sample Response</h3>
+            <pre><code>GET /api/products
+
+[
+  { "id": 1, "name": "Wireless Mouse", "price": 25.99, "category": "Accessories" },
+  { "id": 2, "name": "Bluetooth Headphones", "price": 49.99, "category": "Audio" }
+]</code></pre>
+        </section>
+
+        <section id="stack" class="card">
+            <h2>Technology Stack</h2>
+            <div class="stack" role="list">
+                <span class="pill" role="listitem">C# / .NET</span>
+                <span class="pill" role="listitem">REST API</span>
+                <span class="pill" role="listitem">Entity Framework</span>
+                <span class="pill" role="listitem">SQL Server / PostgreSQL</span>
+                <span class="pill" role="listitem">Docker (optional)</span>
+            </div>
+        </section>
+
+        <section id="community" class="card">
+            <h2>Community & Resources</h2>
+            <div class="badges" aria-label="Project badges">
+                <span class="badge">Open Source</span>
+                <span class="badge">MIT License</span>
+                <span class="badge">CI/CD Ready</span>
+                <span class="badge">Actively Maintained</span>
+            </div>
+            <p>
+                Resources:
+                <a href="https://github.com/supunsarachitha/SmartShop-API" target="_blank" rel="noopener">Repository</a> |
+                <a href="https://github.com/supunsarachitha/SmartShop-API/issues" target="_blank" rel="noopener">Issue Tracker</a> |
+                <a href="https://github.com/supunsarachitha/SmartShop-API/releases" target="_blank" rel="noopener">Releases</a>
+            </p>
+        </section>
+
+        <section id="changelog" class="card">
+            <h2>Changelog</h2>
+            <ul>
+                <li><strong>v1.2</strong>: Order analytics, improved security, Docker compose</li>
+                <li><strong>v1.1</strong>: Customer authentication, PostgreSQL support</li>
+                <li><strong>v1.0</strong>: Initial public release</li>
+            </ul>
+        </section>
+
+        <section id="faq" class="card">
+            <h2>FAQ</h2>
+            <details class="faq">
+                <summary>Is authentication included?</summary>
+                <div>Yes. Customer registration and authentication endpoints are included. See the <a href="https://github.com/supunsarachitha/SmartShop-API/blob/main/README.md" target="_blank" rel="noopener">README</a> for details.</div>
+            </details>
+            <details class="faq">
+                <summary>Can I deploy with Docker?</summary>
+                <div>Yes. Docker support enables easy local and cloud deployments.</div>
+            </details>
+            <details class="faq">
+                <summary>Which databases are supported?</summary>
+                <div>SQL Server and PostgreSQL are supported out of the box.</div>
+            </details>
+            <details class="faq">
+                <summary>How do I report a bug or request a feature?</summary>
+                <div>Open an <a href="https://github.com/supunsarachitha/SmartShop-API/issues" target="_blank" rel="noopener">issue</a> on GitHub.</div>
+            </details>
+        </section>
+
+<section id="sponsors" class="card">
+    <h2>Powered by Industry Leaders</h2>
+    <div class="sponsor-logos" aria-label="Sponsor logos">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png" alt="Docker" loading="lazy" referrerpolicy="no-referrer">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968342.png" alt="Microsoft" loading="lazy" referrerpolicy="no-referrer">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968672.png" alt="PostgreSQL" loading="lazy" referrerpolicy="no-referrer">
+        <img src="https://cdn-icons-png.flaticon.com/512/906/906324.png" alt="GitHub" loading="lazy" referrerpolicy="no-referrer">
+    </div>
+</section>
+
+
+        <section id="contact" class="card">
+            <h2>Contact & Support</h2>
+            <p>
+                Need help or want to get in touch?<br>
+                <strong>Email:</strong> <a href="mailto:stechbuzz+smartshop@gmail.com">stechbuzz+smartshop@gmail.com</a><br>
+                <strong>GitHub Issues:</strong> <a href="https://github.com/supunsarachitha/SmartShop-API/issues" target="_blank" rel="noopener">Report or discuss</a>
+            </p>
+        </section>
+
+        <div class="github-link">
+            <a href="https://github.com/supunsarachitha/SmartShop-API" target="_blank" rel="noopener">View Full Project on GitHub</a>
+        </div>
+    </main>
+
+    <button id="backToTop" class="back-to-top" aria-label="Back to top" title="Back to top">↑</button>
+
+    <footer>
+        <div>
+            © 2025 SmartShop API — Built by Supun Sarachitha
+            <div class="footer-links">
+                <a href="mailto:stechbuzz+smartshop@gmail.com">Email</a> ·
+                <a href="https://github.com/supunsarachitha" target="_blank" rel="noopener">GitHub</a> ·
+                <a href="https://www.linkedin.com/in/supunsarachitha" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme handling (system / light / dark cycle)
+        (function() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const KEY = 'smartshop-theme'; // values: system|light|dark
+
+            function apply(mode) {
+                if (mode === 'dark') {
+                    html.setAttribute('data-theme', 'dark');
+                } else if (mode === 'light') {
+                    html.removeAttribute('data-theme');
+                } else {
+                    // system
+                    if (media.matches) html.setAttribute('data-theme', 'dark');
+                    else html.removeAttribute('data-theme');
+                }
+                btn.title = 'Theme: ' + mode;
+                btn.setAttribute('aria-label', 'Theme: ' + mode);
+                btn.textContent = mode === 'dark' ? '🌙' : mode === 'light' ? '🌞' : '🖥️';
+            }
+
+            function current() {
+                return localStorage.getItem(KEY) || 'system';
+            }
+
+            function set(mode) {
+                localStorage.setItem(KEY, mode);
+                apply(mode);
+            }
+
+            // init
+            apply(current());
+            media.addEventListener('change', () => {
+                if (current() === 'system') apply('system');
+            });
+
+            btn.addEventListener('click', () => {
+                const order = ['system', 'light', 'dark'];
+                const i = order.indexOf(current());
+                set(order[(i + 1) % order.length]);
+            });
+        })();
+
+        // Mobile nav toggle
+        (function() {
+            const toggle = document.getElementById('menuToggle');
+            const links = document.getElementById('navLinks');
+            toggle.addEventListener('click', () => {
+                const open = links.classList.toggle('open');
+                toggle.setAttribute('aria-expanded', String(open));
+            });
+            // Close on link click (mobile)
+            links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+                links.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }));
+        })();
+
+        // Scrollspy
+        (function() {
+            const nav = document.getElementById('navLinks');
+            const anchors = Array.from(nav.querySelectorAll('a')).filter(a => a.getAttribute('href').startsWith('#'));
+            const map = new Map(anchors.map(a => [a.getAttribute('href').slice(1), a]));
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    const id = e.target.id;
+                    const link = map.get(id);
+                    if (!link) return;
+                    if (e.isIntersecting) {
+                        anchors.forEach(a => a.classList.remove('active'));
+                        link.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-45% 0px -50% 0px', threshold: 0.01 });
+
+            map.forEach((_, id) => {
+                const el = document.getElementById(id);
+                if (el) observer.observe(el);
+            });
+        })();
+
+        // Copy buttons for code blocks
+        (function() {
+            document.querySelectorAll('pre > code').forEach(code => {
+                const pre = code.parentElement;
+                const btn = document.createElement('button');
+                btn.className = 'copy-btn';
+                btn.type = 'button';
+                btn.textContent = 'Copy';
+                btn.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(code.textContent);
+                        const old = btn.textContent;
+                        btn.textContent = 'Copied!';
+                        setTimeout(() => btn.textContent = old, 1500);
+                    } catch (e) {
+                        btn.textContent = 'Error';
+                        setTimeout(() => btn.textContent = 'Copy', 1500);
+                    }
+                });
+                pre.appendChild(btn);
+            });
+        })();
+
+        // API filter
+        (function() {
+            const input = document.getElementById('apiFilter');
+            const rows = Array.from(document.querySelectorAll('#apiTableBody tr'));
+            function filter() {
+                const q = input.value.trim().toLowerCase();
+                rows.forEach(tr => {
+                    const text = tr.textContent.toLowerCase();
+                    tr.style.display = text.includes(q) ? '' : 'none';
+                });
+            }
+            input.addEventListener('input', filter);
+        })();
+
+        // Back to top
+        (function() {
+            const btn = document.getElementById('backToTop');
+            function onScroll() {
+                if (window.scrollY > 300) btn.style.display = 'inline-block';
+                else btn.style.display = 'none';
+            }
+            window.addEventListener('scroll', onScroll, { passive: true });
+            btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+            onScroll();
+        })();
+    </script>
+</body>
+</html>
