@@ -39,15 +39,15 @@ namespace SmartShop.API.Controllers
 
             UserAuthenticationResponse auth = _userService.Authenticate(request.UserName, request.Password);
 
-            if (auth != null && auth.IsAuthenticated)
+            if (auth != null && auth.IsAuthenticated && auth.User != null)
             {
-                var token = _tokenService.GenerateJwtToken(auth.User.UserName); 
+                auth.Token = _tokenService.GenerateJwtToken(auth.User.UserName); 
 
                 var response = new ApplicationResponse<object>
                 {
                     Success = true,
-                    Message = "Login successful",
-                    Data = new { token },
+                    Message = "Login Successful",
+                    Data = auth,
                     Errors = null,
                     StatusCode = 200
                 };
