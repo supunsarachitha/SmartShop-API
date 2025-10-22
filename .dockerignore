@@ -1,5 +1,12 @@
 bin/
 obj/
-*.md
-*.user
-*.vs
+.vs/
+.git
+.gitignore
+Dockerfile
+docker-compose.*
+**/*.user
+*.db
+node_modules/
+.idea/
+*.log
