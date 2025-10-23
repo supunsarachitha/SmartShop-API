@@ -1,5 +1,5 @@
 
-# 🛒 SmartShop API
+# SmartShop API
 
 [![.NET](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dotnet.yml/badge.svg)](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dotnet.yml)
 [![Dependency Review](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/supunsarachitha/SmartShop-API/actions/workflows/dependency-review.yml)
@@ -11,7 +11,7 @@ SmartShop API is a **.NET-based backend service** designed to power e-commerce a
 
 ---
 
-## 📌 Features
+## Features
 
 - **Product Management** – Create, update, delete, and list products via secure endpoints.
 - **Category Management** – Organize and manage products by categories.
@@ -24,12 +24,12 @@ SmartShop API is a **.NET-based backend service** designed to power e-commerce a
 - **RESTful API** – Clean, predictable endpoints using standard HTTP conventions.
 - **Entity Models** – Strongly typed C# classes for application data.
 - **Extensible Architecture** – Easily integrates with payment gateways, inventory, and analytics systems.
----
+- **Multi-platform Docker support** (`amd64` and `arm64`)
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Language:** C#
-- **Framework:** .NET (latest version .NET 8+ )
+- **Framework:** .NET (latest version .NET 9+ )
 - **Database:** PostgreSQL
 - **ORM:** Entity Framework Core
 - **Authentication:** JWT-based authentication
@@ -38,7 +38,7 @@ SmartShop API is a **.NET-based backend service** designed to power e-commerce a
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 SmartShop-API/
@@ -61,20 +61,20 @@ SmartShop-API/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 1️⃣ Prerequisites
+### 1️ Prerequisites
 - [.NET 6 SDK](https://dotnet.microsoft.com/download)
 - A running database instance (We preffer PostgreSQL)
 - Git
 
-### 2️⃣ Clone the Repository
+### 2️ Clone the Repository
 ```bash
 git clone https://github.com/supunsarachitha/SmartShop-API.git
 cd SmartShop-API
 ```
 
-### 3️⃣ Configure Environment
+### 3️ Configure Environment
 Create an `appsettings.json` file in `SmartShop.API/` with your database connection string:
 ```json
 {
@@ -113,19 +113,28 @@ dotnet ef database update
 3. The database will be created and seeded automatically.
  
 
-### 5️⃣ Run the API
-```bash
-dotnet run --project SmartShop.API
+### Build and Run Locally
+
+```sh
+dotnet restore
+dotnet build
+dotnet run --project SmartShop.API/SmartShop.API.csproj
 ```
 
-The API will be available at:  
-```
-https://localhost:5001
-```
+The API will be available at `http://localhost:5218` by default.
 
 ---
 
-## 📖 API Documentation
+#### Run Locally with Docker
+
+```sh
+docker run -p 8080:80 stechbuzz/smartshop-api:latest
+```
+
+The API will be available at `http://localhost:8080`.
+
+
+## API Documentation
 
 Once running, you can explore the API via Swagger UI:  
 ```
@@ -134,7 +143,7 @@ https://localhost:5001/swagger
 
 ---
 
-## 🧪 Testing
+## Testing
 
 Run unit tests with:
 ```bash
@@ -148,22 +157,22 @@ This solution includes unit and integration test projects to ensure SmartShop-AP
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the [Apache License 2.0](LICENSE.txt).
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions of all kinds—bug fixes, feature enhancements, documentation improvements, and more.
 
-📌 See our [Contributing Guidelines](CONTRIBUTING.md) to get started.
+ See our [Contributing Guidelines](CONTRIBUTING.md) to get started.
 
 
 ---
 
-## 📬 Contact
+## Contact
 
 **Author:** Supun Sarachitha  
 **GitHub:** [supunsarachitha](https://github.com/supunsarachitha)
