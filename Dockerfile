@@ -14,6 +14,9 @@ RUN dotnet publish ./SmartShop.API/SmartShop.API.csproj -c Release -o /app/publi
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
+# Install curl for healthcheck  
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Set ASP.NET Core to listen on port 80
 ENV ASPNETCORE_URLS=http://+:80
 EXPOSE 80
@@ -29,7 +32,7 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # Health check to verify the container is running and serving HTTP
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost/ || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost/api/Status || exit 1
 
 # Start the application
 ENTRYPOINT ["dotnet", "SmartShop.API.dll"]
