@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>SmartShop API</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="SmartShop API is a modern .NET backend for e-commerce with clean RESTful endpoints to manage products, categories, customers, and orders.">
+    <meta name="description" content="SmartShop API is a modern .NET backend for e-commerce with clean RESTful endpoints to manage products, customers, users, invoices, payments and settings.">
     <link rel="canonical" href="https://github.com/supunsarachitha/SmartShop-API">
     <meta property="og:title" content="SmartShop API">
     <meta property="og:description" content="Modern .NET backend for e-commerce with clean RESTful endpoints.">
@@ -188,24 +188,30 @@
             <h2>Quick Start</h2>
             <ol>
                 <li><strong>Clone:</strong> <code>git clone https://github.com/supunsarachitha/SmartShop-API.git</code></li>
-                <li><strong>Restore:</strong> <code>dotnet restore</code></li>
-                <li><strong>Run:</strong> <code>dotnet run</code></li>
-                <li><strong>Test:</strong> Visit <code>https://localhost:5001/api/products</code></li>
+                <li><strong>Configure:</strong> add <code>SmartShop.API/appsettings.json</code> with a PostgreSQL connection string and JWT settings, then run <code>dotnet ef database update --project SmartShop.API</code></li>
+                <li><strong>Run:</strong> <code>dotnet run --project SmartShop.API/SmartShop.API.csproj</code> (requires the .NET 9 SDK)</li>
+                <li><strong>Test:</strong> Visit <code>http://localhost:5218/api/Status</code></li>
             </ol>
             <p class="meta">See the <a href="https://github.com/supunsarachitha/SmartShop-API/blob/master/README.md" target="_blank" rel="noopener">README</a> for full setup and environment configuration.</p>
             <div class="notice" role="note">
-                If you use Swashbuckle/OpenAPI, your docs may be available at <code>/swagger</code> (e.g., <code>https://localhost:5001/swagger</code>).
+                In the Development environment, Swagger UI is available at <code>http://localhost:5218/swagger</code>.
             </div>
         </section>
 
         <section id="demo" class="card">
             <h2>Demo: Try the API</h2>
-            <p>Fetch products with cURL:</p>
-            <pre><code>curl -X GET https://localhost:5001/api/products</code></pre>
-            <p>Create a new product:</p>
-            <pre><code>curl -X POST https://localhost:5001/api/products \
+            <p>Log in with the seeded admin user to get a JWT (valid for 30 minutes):</p>
+            <pre><code>curl -X POST http://localhost:5218/api/Auth/login \
   -H "Content-Type: application/json" \
-  -d '{"name":"Bluetooth Headphones","price":49.99,"category":"Audio"}'</code></pre>
+  -d '{"userName":"admin","password":"admin123"}'</code></pre>
+            <p>Fetch products with cURL, sending the token:</p>
+            <pre><code>curl -X GET http://localhost:5218/api/Products \
+  -H "Authorization: Bearer &lt;token&gt;"</code></pre>
+            <p>Create a new product:</p>
+            <pre><code>curl -X POST http://localhost:5218/api/Products \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer &lt;token&gt;" \
+  -d '{"name":"Bluetooth Headphones","price":49.99,"stock":25}'</code></pre>
         </section>
 
         <section id="features">
@@ -213,18 +219,18 @@
             <div class="features">
                 <div class="feature" role="article">
                     <div class="icon" aria-hidden="true">🛒</div>
-                    <h3>Products & Categories</h3>
-                    <p>Full CRUD for products and categories to power your catalog.</p>
+                    <h3>Products</h3>
+                    <p>Full CRUD for products with price and stock to power your catalog.</p>
                 </div>
                 <div class="feature" role="article">
                     <div class="icon" aria-hidden="true">👥</div>
                     <h3>Customers</h3>
-                    <p>Customer profiles, registration, and authentication support.</p>
+                    <p>Full CRUD for customer profiles, plus user accounts with roles and JWT login.</p>
                 </div>
                 <div class="feature" role="article">
                     <div class="icon" aria-hidden="true">📦</div>
-                    <h3>Orders</h3>
-                    <p>Create, update, and track orders with solid, extensible models.</p>
+                    <h3>Invoices & Payments</h3>
+                    <p>Create invoices with line items and payments, manage payment methods and store settings.</p>
                 </div>
                 <div class="feature" role="article">
                     <div class="icon" aria-hidden="true">⚡</div>
@@ -234,7 +240,7 @@
                 <div class="feature" role="article">
                     <div class="icon" aria-hidden="true">🔒</div>
                     <h3>Security</h3>
-                    <p>Secure defaults and best practices to protect your data.</p>
+                    <p>JWT authentication on every endpoint except login and status.</p>
                 </div>
             </div>
         </section>
@@ -242,7 +248,7 @@
         <section id="api-docs" class="card">
             <h2>API Documentation</h2>
             <div class="table-tools" role="search">
-                <input id="apiFilter" class="input" placeholder="Filter endpoints (e.g., products GET)" aria-label="Filter API endpoints">
+                <input id="apiFilter" class="input" placeholder="Filter endpoints (e.g., Products GET)" aria-label="Filter API endpoints">
             </div>
             <table aria-label="API endpoints">
                 <thead>
@@ -255,47 +261,107 @@
                 </thead>
                 <tbody id="apiTableBody">
                     <tr>
-                        <td>/api/products</td>
+                        <td>/api/Auth/login</td>
+                        <td>POST</td>
+                        <td>Log in and receive a JWT</td>
+                        <td>userName, password</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Status</td>
+                        <td>GET</td>
+                        <td>Health check (no token needed)</td>
+                        <td>None</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Products</td>
                         <td>GET</td>
                         <td>List all products</td>
                         <td>None</td>
                     </tr>
                     <tr>
-                        <td>/api/products</td>
+                        <td>/api/Products</td>
                         <td>POST</td>
                         <td>Create a new product</td>
-                        <td>name, price, category</td>
+                        <td>name, price, stock</td>
                     </tr>
                     <tr>
-                        <td>/api/orders</td>
-                        <td>POST</td>
-                        <td>Create a new order</td>
-                        <td>customerId, items[]</td>
+                        <td>/api/Products/{id}</td>
+                        <td>GET / PUT / DELETE</td>
+                        <td>Get, update or delete a product</td>
+                        <td>id (GUID)</td>
                     </tr>
                     <tr>
-                        <td>/api/customers</td>
-                        <td>GET</td>
-                        <td>List all customers</td>
-                        <td>None</td>
+                        <td>/api/Customers</td>
+                        <td>GET / POST</td>
+                        <td>List customers or create one</td>
+                        <td>name, email, phone</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Customers/{id}</td>
+                        <td>GET / PUT / DELETE</td>
+                        <td>Get, update or delete a customer</td>
+                        <td>id (GUID)</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Invoices</td>
+                        <td>GET / POST</td>
+                        <td>List invoices or create one</td>
+                        <td>customerId, items[], payments[]</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Invoices/{id}</td>
+                        <td>GET / PUT / DELETE</td>
+                        <td>Get, update or delete an invoice</td>
+                        <td>id (GUID)</td>
+                    </tr>
+                    <tr>
+                        <td>/api/PaymentMethods</td>
+                        <td>GET / POST</td>
+                        <td>List payment methods or create one</td>
+                        <td>name, description, type</td>
+                    </tr>
+                    <tr>
+                        <td>/api/PaymentMethods/{id}</td>
+                        <td>GET / PUT / DELETE</td>
+                        <td>Get, update or delete a payment method</td>
+                        <td>id (GUID)</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Settings</td>
+                        <td>GET / POST</td>
+                        <td>List settings or create one</td>
+                        <td>key, value, dataType</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Settings/{id}</td>
+                        <td>GET / PUT / DELETE</td>
+                        <td>Get, update or delete a setting</td>
+                        <td>id (GUID)</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Users</td>
+                        <td>GET / POST</td>
+                        <td>List users or create one</td>
+                        <td>see Swagger UI</td>
+                    </tr>
+                    <tr>
+                        <td>/api/Users/{id}</td>
+                        <td>GET / PUT / DELETE</td>
+                        <td>Get, update or delete a user</td>
+                        <td>id (GUID)</td>
                     </tr>
                 </tbody>
             </table>
-            <h3>Sample Response</h3>
-            <pre><code>GET /api/products
-
-[
-  { "id": 1, "name": "Wireless Mouse", "price": 25.99, "category": "Accessories" },
-  { "id": 2, "name": "Bluetooth Headphones", "price": 49.99, "category": "Audio" }
-]</code></pre>
+            <p class="meta">Every endpoint except login and status needs an <code>Authorization: Bearer &lt;token&gt;</code> header. Responses are wrapped in a common envelope with <code>success</code>, <code>message</code>, <code>data</code> and <code>statusCode</code> fields.</p>
         </section>
 
         <section id="stack" class="card">
             <h2>Technology Stack</h2>
             <div class="stack" role="list">
-                <span class="pill" role="listitem">C# / .NET</span>
+                <span class="pill" role="listitem">C# / .NET 9</span>
                 <span class="pill" role="listitem">REST API</span>
-                <span class="pill" role="listitem">Entity Framework</span>
-                <span class="pill" role="listitem">SQL Server / PostgreSQL</span>
+                <span class="pill" role="listitem">Entity Framework Core</span>
+                <span class="pill" role="listitem">PostgreSQL</span>
                 <span class="pill" role="listitem">Docker (optional)</span>
             </div>
         </section>
@@ -304,7 +370,7 @@
             <h2>Community & Resources</h2>
             <div class="badges" aria-label="Project badges">
                 <span class="badge">Open Source</span>
-                <span class="badge">MIT License</span>
+                <span class="badge">Apache 2.0 License</span>
                 <span class="badge">CI/CD Ready</span>
                 <span class="badge">Actively Maintained</span>
             </div>
@@ -318,10 +384,11 @@
 
         <section id="changelog" class="card">
             <h2>Changelog</h2>
+            <p class="meta">Release notes for each version are on the <a href="https://github.com/supunsarachitha/SmartShop-API/releases" target="_blank" rel="noopener">Releases</a> page.</p>
             <ul>
-                <li><strong>v1.2</strong>: Order analytics, improved security, Docker compose</li>
-                <li><strong>v1.1</strong>: Customer authentication, PostgreSQL support</li>
-                <li><strong>v1.0</strong>: Initial public release</li>
+                <li><strong>v0.1-beta-3</strong> (October 2025)</li>
+                <li><strong>v0.0.2-beta</strong> (September 2025)</li>
+                <li><strong>v0.0.1-beta</strong> (September 2025)</li>
             </ul>
         </section>
 
@@ -329,15 +396,15 @@
             <h2>FAQ</h2>
             <details class="faq">
                 <summary>Is authentication included?</summary>
-                <div>Yes. Customer registration and authentication endpoints are included. See the <a href="https://github.com/supunsarachitha/SmartShop-API/blob/main/README.md" target="_blank" rel="noopener">README</a> for details.</div>
+                <div>Yes. A JWT login endpoint is included and all other endpoints (except the status check) require the token. See the <a href="https://github.com/supunsarachitha/SmartShop-API/blob/master/README.md" target="_blank" rel="noopener">README</a> for details.</div>
             </details>
             <details class="faq">
                 <summary>Can I deploy with Docker?</summary>
-                <div>Yes. Docker support enables easy local and cloud deployments.</div>
+                <div>Yes. A Dockerfile is included and multi-platform (amd64 and arm64) images are published as <code>stechbuzz/smartshop-api</code> on Docker Hub. Pass the database and JWT settings as environment variables.</div>
             </details>
             <details class="faq">
                 <summary>Which databases are supported?</summary>
-                <div>SQL Server and PostgreSQL are supported out of the box.</div>
+                <div>PostgreSQL, through Entity Framework Core and the Npgsql provider.</div>
             </details>
             <details class="faq">
                 <summary>How do I report a bug or request a feature?</summary>
